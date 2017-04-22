@@ -12,6 +12,63 @@
             android:layout_weight="1"
             />
 
+    <RelativeLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+        <LinearLayout
+                android:id="@+id/left_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_alignTop="@+id/switchTranslate"
+                android:layout_alignBottom="@+id/switchTranslate"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@+id/switchTranslate"
+                >
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Русский"
+                    android:id="@+id/textView"
+                    android:gravity="center_vertical|center_horizontal"
+                    />
+        </LinearLayout>
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/switchTranslate"
+                android:src="@mipmap/ic_launcher"
+                android:layout_marginTop="0dp"
+                android:layout_centerHorizontal="true"
+                />
+
+        <LinearLayout
+                android:id="@+id/right_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/switchTranslate"
+                android:layout_alignTop="@+id/switchTranslate"
+                android:layout_toRightOf="@+id/switchTranslate"
+                android:layout_alignParentRight="true"
+                >
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Английский"
+                    android:id="@+id/textView2"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|center_horizontal"
+                    />
+        </LinearLayout>
+
+    </RelativeLayout>
+
     <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
