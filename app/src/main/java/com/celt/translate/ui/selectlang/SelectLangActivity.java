@@ -1,11 +1,12 @@
 package com.celt.translate.ui.selectlang;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.Toast;
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -15,6 +16,14 @@ import com.celt.translate.business.models.Lang;
 import java.util.List;
 
 public class SelectLangActivity extends MvpAppCompatActivity implements SelectLang {
+
+    public static Intent newIntent(Context context, Lang lang) {
+
+        Intent intent = new Intent(context, SelectLangActivity.class);
+        intent.putExtra(Lang.NAME, lang);
+
+        return intent;
+    }
 
     @InjectPresenter
     SelectLangPresenter presenter;
@@ -38,7 +47,13 @@ public class SelectLangActivity extends MvpAppCompatActivity implements SelectLa
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-        adapter.setOnClickLister(item -> Toast.makeText(SelectLangActivity.this, item.getCode(), Toast.LENGTH_SHORT).show());
+
+        adapter.setOnClickLister(item -> {
+            Intent intent = new Intent();
+            intent.putExtra(Lang.NAME, item);
+            setResult(RESULT_OK, intent);
+            finish();
+        });
     }
 
     @Override

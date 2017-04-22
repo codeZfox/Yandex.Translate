@@ -16,7 +16,7 @@ import java.util.List;
 public class SelectLangPresenter extends MvpPresenter<SelectLang> {
 
     private TranslateInteractor interactor = new TranslateInteractorImpl();
-    private List<Lang> langs =  new ArrayList<>();
+    private List<Lang> langs = new ArrayList<>();
 
     public SelectLangPresenter(Context context) {
 
@@ -28,9 +28,7 @@ public class SelectLangPresenter extends MvpPresenter<SelectLang> {
                 .subscribe(langs -> {
                     this.langs = langs;
                     getViewState().setLangs(this.langs);
-                }, e -> {
-
-                });
+                }, Throwable::printStackTrace);
     }
 
 }

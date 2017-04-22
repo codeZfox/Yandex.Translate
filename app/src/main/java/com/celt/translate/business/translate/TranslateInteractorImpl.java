@@ -1,6 +1,7 @@
 package com.celt.translate.business.translate;
 
 import com.celt.translate.business.models.Lang;
+import com.celt.translate.data.models.TranslateResponse;
 import com.celt.translate.data.repositories.translate.TranslateRepository;
 import com.celt.translate.data.repositories.translate.TranslateRepositoryImpl;
 import io.reactivex.Single;
@@ -24,6 +25,11 @@ public class TranslateInteractorImpl implements TranslateInteractor {
                     Collections.sort(list);
                     return list;
                 });
+    }
+
+    @Override
+    public Single<TranslateResponse> translate(String text, Lang langFrom, Lang langTo) {
+        return repository.translate(text, langFrom.getCode() + "-" + langTo.getCode());
     }
 
 }

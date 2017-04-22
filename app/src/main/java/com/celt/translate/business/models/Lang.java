@@ -1,15 +1,15 @@
 package com.celt.translate.business.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import com.celt.translate.data.models.LangsResponse;
 
-public class Lang implements Comparable<Lang>{
+public class Lang implements Comparable<Lang>, Parcelable {
+
+    public static final String NAME = "LANG";
+
     private String code;
     private String ui;
-
-    public Lang(LangsResponse item) {
-
-    }
 
     public Lang(String key, String value) {
         this.code = key;
@@ -28,4 +28,32 @@ public class Lang implements Comparable<Lang>{
     public int compareTo(@NonNull Lang o) {
         return this.ui.compareTo(o.ui);
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.code);
+        dest.writeString(this.ui);
+    }
+
+    protected Lang(Parcel in) {
+        this.code = in.readString();
+        this.ui = in.readString();
+    }
+
+    public static final Parcelable.Creator<Lang> CREATOR = new Parcelable.Creator<Lang>() {
+        @Override
+        public Lang createFromParcel(Parcel source) {
+            return new Lang(source);
+        }
+
+        @Override
+        public Lang[] newArray(int size) {
+            return new Lang[size];
+        }
+    };
 }
