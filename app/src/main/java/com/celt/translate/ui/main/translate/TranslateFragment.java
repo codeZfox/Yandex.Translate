@@ -1,5 +1,6 @@
 package com.celt.translate.ui.main.translate;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
@@ -14,6 +15,7 @@ import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.celt.translate.R;
+import com.celt.translate.ui.selectlang.SelectLangActivity;
 
 public class TranslateFragment extends MvpAppCompatFragment implements TranslateView {
 
@@ -61,39 +63,38 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
         }
 
 
-        view.findViewById(R.id.switchTranslate).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (noSwap) {
-                    TranslateAnimation ta1 = new TranslateAnimation(0, viewHeight, 0, 0);
-                    ta1.setDuration(ANIMATION_DURATION);
-                    ta1.setFillAfter(true);
-                    leftView.startAnimation(ta1);
-                    leftView.bringToFront();
+        view.findViewById(R.id.switchTranslate).setOnClickListener(v -> {
+            if (noSwap) {
+                TranslateAnimation ta1 = new TranslateAnimation(0, viewHeight, 0, 0);
+                ta1.setDuration(ANIMATION_DURATION);
+                ta1.setFillAfter(true);
+                leftView.startAnimation(ta1);
+                leftView.bringToFront();
 
-                    TranslateAnimation ta2 = new TranslateAnimation(0, -viewHeight, 0, 0);
-                    ta2.setDuration(ANIMATION_DURATION);
-                    ta2.setFillAfter(true);
-                    rightView.startAnimation(ta2);
-                    rightView.bringToFront();
+                TranslateAnimation ta2 = new TranslateAnimation(0, -viewHeight, 0, 0);
+                ta2.setDuration(ANIMATION_DURATION);
+                ta2.setFillAfter(true);
+                rightView.startAnimation(ta2);
+                rightView.bringToFront();
 
-                    noSwap = false;
-                } else {
-                    TranslateAnimation ta1 = new TranslateAnimation(viewHeight, 0, 0, 0);
-                    ta1.setDuration(ANIMATION_DURATION);
-                    ta1.setFillAfter(true);
-                    leftView.startAnimation(ta1);
-                    leftView.bringToFront();
+                noSwap = false;
+            } else {
+                TranslateAnimation ta1 = new TranslateAnimation(viewHeight, 0, 0, 0);
+                ta1.setDuration(ANIMATION_DURATION);
+                ta1.setFillAfter(true);
+                leftView.startAnimation(ta1);
+                leftView.bringToFront();
 
-                    TranslateAnimation ta2 = new TranslateAnimation(-viewHeight, 0, 0, 0);
-                    ta2.setDuration(ANIMATION_DURATION);
-                    ta2.setFillAfter(true);
-                    rightView.startAnimation(ta2);
-                    rightView.bringToFront();
+                TranslateAnimation ta2 = new TranslateAnimation(-viewHeight, 0, 0, 0);
+                ta2.setDuration(ANIMATION_DURATION);
+                ta2.setFillAfter(true);
+                rightView.startAnimation(ta2);
+                rightView.bringToFront();
 
-                    noSwap = true;
-                }
+                noSwap = true;
             }
         });
+
+        leftView.setOnClickListener(v -> startActivityForResult(new Intent(getContext(), SelectLangActivity.class), 0));
     }
 }
