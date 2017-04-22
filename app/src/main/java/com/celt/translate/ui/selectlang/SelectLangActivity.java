@@ -30,7 +30,7 @@ public class SelectLangActivity extends MvpAppCompatActivity implements SelectLa
 
     @ProvidePresenter
     SelectLangPresenter providePresenter() {
-        return new SelectLangPresenter(this);
+        return new SelectLangPresenter();
     }
 
     private SelectLangAdapter adapter = new SelectLangAdapter();

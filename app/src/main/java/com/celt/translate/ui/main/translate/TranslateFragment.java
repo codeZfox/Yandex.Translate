@@ -43,7 +43,7 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
     private TextView textViewLangFrom, textViewLangTo;
     TextView translatedText;
 
-    private int viewHeight;
+    private int position;
     private EditText editText;
     private boolean isSwap = false;
     private static int ANIMATION_DURATION = 300;
@@ -58,6 +58,7 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
         textViewLangFrom = (TextView) view.findViewById(R.id.textView_lang_from);
         textViewLangTo = (TextView) view.findViewById(R.id.textView_lang_to);
 
+
         getTextViewLangFrom().setOnClickListener(v -> presenter.clickTextViewLangFrom());
         getTextViewLangTo().setOnClickListener(v -> presenter.clickTextViewLangTo());
 
@@ -69,7 +70,7 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
                 @Override
                 public void onGlobalLayout() {
                     textViewLangFrom.getViewTreeObserver().addOnGlobalLayoutListener(this);
-                    viewHeight = width - (textViewLangFrom.getWidth() + textViewLangTo.getWidth()) + textViewLangFrom.getWidth();
+                    position = width - (textViewLangFrom.getWidth() + textViewLangTo.getWidth()) + textViewLangFrom.getWidth();
                     textViewLangFrom.getLayoutParams();
                 }
             });
@@ -78,13 +79,13 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
 
         view.findViewById(R.id.switchTranslate).setOnClickListener(v -> {
             if (!isSwap) {
-                TranslateAnimation ta1 = new TranslateAnimation(0, viewHeight, 0, 0);
+                TranslateAnimation ta1 = new TranslateAnimation(0, position, 0, 0);
                 ta1.setDuration(ANIMATION_DURATION);
                 ta1.setFillAfter(true);
                 textViewLangFrom.startAnimation(ta1);
                 textViewLangFrom.bringToFront();
 
-                TranslateAnimation ta2 = new TranslateAnimation(0, -viewHeight, 0, 0);
+                TranslateAnimation ta2 = new TranslateAnimation(0, -position, 0, 0);
                 ta2.setDuration(ANIMATION_DURATION);
                 ta2.setFillAfter(true);
                 textViewLangTo.startAnimation(ta2);
@@ -94,13 +95,13 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
 
                 presenter.swapLang();
             } else {
-                TranslateAnimation ta1 = new TranslateAnimation(viewHeight, 0, 0, 0);
+                TranslateAnimation ta1 = new TranslateAnimation(position, 0, 0, 0);
                 ta1.setDuration(ANIMATION_DURATION);
                 ta1.setFillAfter(true);
                 textViewLangFrom.startAnimation(ta1);
                 textViewLangFrom.bringToFront();
 
-                TranslateAnimation ta2 = new TranslateAnimation(-viewHeight, 0, 0, 0);
+                TranslateAnimation ta2 = new TranslateAnimation(-position, 0, 0, 0);
                 ta2.setDuration(ANIMATION_DURATION);
                 ta2.setFillAfter(true);
                 textViewLangTo.startAnimation(ta2);

@@ -30,6 +30,8 @@ ext {
 
     supportVersion = '25.3.1'
 
+    daggerVersion = '2.10'
+
     retrofitVersion = '2.2.0'
 
     okhttpVersion = '3.4.1'
@@ -43,6 +45,9 @@ dependencies {
     compile "com.android.support:appcompat-v7:$supportVersion"
     compile "com.android.support:design:$supportVersion"
     compile "com.android.support:recyclerview-v7:$supportVersion"
+
+    compile "com.google.dagger:dagger:$daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
 
     compile "com.arello-mobile:moxy:$moxy"
     compile "com.arello-mobile:moxy-android:$moxy"

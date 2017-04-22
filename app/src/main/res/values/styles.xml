@@ -8,6 +8,8 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="android:textColor">#000</item>
+
+        <item name="colorDivider" >@color/colorDivider</item>
     </style>
 
 </resources>

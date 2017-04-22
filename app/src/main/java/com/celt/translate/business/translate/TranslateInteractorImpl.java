@@ -1,11 +1,12 @@
 package com.celt.translate.business.translate;
 
 import com.celt.translate.business.models.Lang;
+import com.celt.translate.dagger.Components;
 import com.celt.translate.data.models.TranslateResponse;
 import com.celt.translate.data.repositories.translate.TranslateRepository;
-import com.celt.translate.data.repositories.translate.TranslateRepositoryImpl;
 import io.reactivex.Single;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +14,12 @@ import java.util.Map;
 
 public class TranslateInteractorImpl implements TranslateInteractor {
 
-    private TranslateRepository repository = new TranslateRepositoryImpl();
+    @Inject
+    public TranslateRepository repository;
+
+    public TranslateInteractorImpl() {
+        Components.getAppComponent().inject(this);
+    }
 
     public Single<List<Lang>> getLangs(String ui) {
         return repository.getLangs(ui)

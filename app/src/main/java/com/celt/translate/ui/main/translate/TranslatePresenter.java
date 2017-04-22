@@ -6,14 +6,17 @@ import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.celt.translate.business.models.Lang;
 import com.celt.translate.business.translate.TranslateInteractor;
-import com.celt.translate.business.translate.TranslateInteractorImpl;
+import com.celt.translate.dagger.Components;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+
+import javax.inject.Inject;
 
 @InjectViewState
 public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
-    private TranslateInteractor interactor = new TranslateInteractorImpl();
+    @Inject
+    public TranslateInteractor interactor;
 
     private Lang langFrom;
     private Lang langTo;
@@ -23,6 +26,9 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     private Handler handlerForSearch = new Handler();
 
     public TranslatePresenter(Context context) {
+
+        Components.getAppComponent().inject(this);
+
         langFrom = new Lang("ru", "Русский");
         langTo = new Lang("en", "Английский");
 
