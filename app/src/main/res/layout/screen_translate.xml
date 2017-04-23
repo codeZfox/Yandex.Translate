@@ -18,6 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:clickable="true"
+
             />
 
     <RelativeLayout
@@ -81,6 +83,20 @@
                 android:paddingBottom="8dp"
                 android:paddingRight="40dp"
                 android:singleLine="true"
+                android:minHeight="82dp"
+                />
+
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnClearText"
+                android:src="@drawable/ic_delete"
+                android:layout_alignRight="@+id/editText"
+                android:padding="6dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_alignTop="@+id/editText"
+                android:tint="?attr/colorBtn"
                 />
 
         <ImageView
@@ -89,9 +105,10 @@
                 android:id="@+id/btnPlayText"
                 android:src="@drawable/ic_sound_active"
                 android:layout_alignRight="@+id/editText"
-                android:padding="4dp"
+                android:padding="6dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_alignBottom="@+id/editText"
+                android:tint="?attr/colorBtn"
                 />
     </RelativeLayout>
 

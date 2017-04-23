@@ -17,7 +17,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.celt.translate.R;
 import com.celt.translate.business.models.Lang;
@@ -25,9 +24,9 @@ import com.celt.translate.ui.base.AbsFragment;
 import com.celt.translate.ui.base.SimpleTextWatcher;
 import com.celt.translate.ui.selectlang.SelectLangActivity;
 
-import java.util.List;
-
 import static android.app.Activity.RESULT_OK;
+import static com.celt.translate.ui.base.KeyboardUtils.setupUI;
+import static com.celt.translate.ui.base.KeyboardUtils.showSoftKeyboard;
 
 public class TranslateFragment extends AbsFragment implements TranslateView {
 
@@ -42,6 +41,7 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
     private TextView textViewLangFrom, textViewLangTo;
     private TextView translatedText;
     private ImageView btnPlayText;
+    private View btnClearText;
 
     private int position;
     private EditText editText;
@@ -54,6 +54,12 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
 
         editText = (EditText) view.findViewById(R.id.editText);
         translatedText = (TextView) view.findViewById(R.id.textView_translated);
+        btnClearText = view.findViewById(R.id.btnClearText);
+        btnClearText.setVisibility(View.INVISIBLE);
+        btnClearText.setOnClickListener(v -> {
+            editText.setText("");
+//            presenter.translate("");
+        });
 
         textViewLangFrom = (TextView) view.findViewById(R.id.textView_lang_from);
         textViewLangTo = (TextView) view.findViewById(R.id.textView_lang_to);
@@ -117,7 +123,6 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
 
         editText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                Toast.makeText(getContext(), getTextViewLangFrom().getText().toString(), Toast.LENGTH_SHORT).show();
                 presenter.translate(v.getText().toString());
             }
             return true;
@@ -126,13 +131,16 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
         editText.addTextChangedListener(new SimpleTextWatcher() {
                                             @Override
                                             public void afterTextChanged(Editable s) {
-                                                presenter.translate(s.toString());
+                                                String text = s.toString();
+                                                btnClearText.setVisibility(!text.isEmpty() ? View.VISIBLE : View.INVISIBLE);
+                                                presenter.translate(text);
                                             }
                                         }
         );
 
         btnPlayText = (ImageView) view.findViewById(R.id.btnPlayText);
         btnPlayText.setOnClickListener(v -> presenter.playText());
+        setupUI(getActivity(), view);
     }
 
     private TextView getTextViewLangFrom() {
@@ -159,17 +167,17 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
         getTextViewLangTo().setText(lang.getUi());
     }
 
-    @Override
-    public void showTranslate(List<String> list) {
-        StringBuilder builder = new StringBuilder();
-
-        for (String item : list) {
-            builder.append(item);
-            builder.append("\t");
-        }
-
-        translatedText.setText(builder.toString());
-    }
+//    @Override
+//    public void showTranslate(List<String> list) {
+//        StringBuilder builder = new StringBuilder();
+//
+//        for (String item : list) {
+//            builder.append(item);
+//            builder.append("\t");
+//        }
+//
+//        translatedText.setText(builder.toString());
+//    }
 
     @Override
     public void showTranslate(String text) {
@@ -194,6 +202,10 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
+
+            editText.requestFocus();
+            showSoftKeyboard(getActivity());
+
             switch (requestCode) {
                 case REQUEST_CODE_LANG_FROM: {
                     presenter.setLangFrom(data.getParcelableExtra(Lang.NAME));

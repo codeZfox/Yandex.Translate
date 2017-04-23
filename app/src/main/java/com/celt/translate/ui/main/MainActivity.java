@@ -11,6 +11,8 @@ import com.celt.translate.ui.base.ViewPagerAdapter;
 import com.celt.translate.ui.main.localdata.TabsLocalDataFragment;
 import com.celt.translate.ui.main.translate.TranslateFragment;
 
+import static com.celt.translate.ui.base.KeyboardUtils.setupUI;
+
 public class MainActivity extends MvpAppCompatActivity implements MainView {
 
 
@@ -45,5 +47,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_tab_translate);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_tab_fav);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_tab_settings);
+
+        setupUI(this, findViewById(R.id.root));
     }
 }

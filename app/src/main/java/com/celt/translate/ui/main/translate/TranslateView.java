@@ -4,10 +4,7 @@ import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
-import com.celt.translate.ui.base.AddToEndSingleByTagStateStrategy;
 import com.celt.translate.business.models.Lang;
-
-import java.util.List;
 
 @StateStrategyType(AddToEndSingleStrategy.class)
 public interface TranslateView extends MvpView {
@@ -16,10 +13,10 @@ public interface TranslateView extends MvpView {
 
     void setLangTo(Lang lang);
 
-    @StateStrategyType(value = AddToEndSingleByTagStateStrategy.class, tag = "showTranslate")
-    void showTranslate(List<String> list);
+//    @StateStrategyType(value = AddToEndSingleByTagStateStrategy.class, tag = "showTranslate")
+//    void showTranslate(List<String> list);
 
-    @StateStrategyType(value = AddToEndSingleByTagStateStrategy.class, tag = "showTranslate")
+//    @StateStrategyType(value = AddToEndSingleByTagStateStrategy.class, tag = "showTranslate")
     void showTranslate(String text);
 
     @StateStrategyType(OneExecutionStateStrategy.class)
