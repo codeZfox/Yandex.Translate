@@ -8,4 +8,8 @@
 
     <color name="colorGray">#858e98</color>
 
+    <color name="colorPos">#9f8894</color>
+    <color name="colorTr">#57788e</color>
+    <color name="colorMean">#866454</color>
+
 </resources>

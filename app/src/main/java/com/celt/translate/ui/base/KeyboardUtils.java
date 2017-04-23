@@ -12,8 +12,10 @@ public class KeyboardUtils {
     public static void setupUI(Activity activity, View view) {
 
         if (!(view instanceof TextView || view instanceof ImageView)) {
+            view.requestFocus();
             view.setOnTouchListener(new View.OnTouchListener() {
                 public boolean onTouch(View v, MotionEvent event) {
+                    v.requestFocus();
                     hideSoftKeyboard(activity);
                     return false;
                 }
@@ -30,6 +32,9 @@ public class KeyboardUtils {
 
     public static void hideSoftKeyboard(Activity activity) {
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+        View view = activity.getCurrentFocus();
+        if (view != null) {
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }

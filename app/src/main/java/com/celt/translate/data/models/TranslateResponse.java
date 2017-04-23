@@ -1,4 +1,4 @@
-package com.celt.translate.data.models.responses;
+package com.celt.translate.data.models;
 
 import com.google.gson.annotations.SerializedName;
 

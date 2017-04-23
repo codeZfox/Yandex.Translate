@@ -10,22 +10,33 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView_translated"
-            android:padding="8dp"
-            android:textSize="16sp"
+            android:paddingTop="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="4dp"
+            android:textSize="22sp"
             />
 
-    <View
+    <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/recyclerView"
             android:layout_weight="1"
-            android:clickable="true"
-
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:overScrollMode="never"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
             />
 
     <RelativeLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:background="@drawable/gradient_wihte_transp"
+            android:layout_alignParentBottom="true"
             >
 
         <TextView
@@ -35,9 +46,9 @@
                 android:layout_alignBottom="@+id/switchTranslate"
                 android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@+id/switchTranslate"
-                android:text="Русский"
                 android:id="@+id/textView_lang_from"
                 android:gravity="center_vertical|center_horizontal"
+                android:textSize="16sp"
                 />
 
         <ImageView
@@ -58,9 +69,9 @@
                 android:layout_alignTop="@+id/switchTranslate"
                 android:layout_toRightOf="@+id/switchTranslate"
                 android:layout_alignParentRight="true"
-                android:text="Английский"
                 android:id="@+id/textView_lang_to"
                 android:gravity="center_vertical|center_horizontal"
+                android:textSize="16sp"
                 />
 
     </RelativeLayout>
@@ -73,9 +84,11 @@
         <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/background_edit"
+                android:background="@drawable/selector_edittext"
                 android:id="@+id/editText"
-                android:layout_margin="12dp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginLeft="12dp"
                 android:imeOptions="actionDone"
                 android:gravity="top"
                 android:paddingTop="8dp"
@@ -93,22 +106,21 @@
                 android:id="@+id/btnClearText"
                 android:src="@drawable/ic_delete"
                 android:layout_alignRight="@+id/editText"
-                android:padding="6dp"
+                android:layout_margin="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_alignTop="@+id/editText"
                 android:tint="?attr/colorBtn"
                 />
 
         <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:id="@+id/btnPlayText"
                 android:src="@drawable/ic_sound_active"
                 android:layout_alignRight="@+id/editText"
-                android:padding="6dp"
+                android:layout_margin="6dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_alignBottom="@+id/editText"
-                android:tint="?attr/colorBtn"
                 />
     </RelativeLayout>
 

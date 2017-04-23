@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import com.celt.translate.data.repositories.database.DatabaseRepository;
 import com.celt.translate.data.repositories.database.DatabaseRepositoryImpl;
+import com.celt.translate.data.repositories.dictionary.DictionaryRepository;
+import com.celt.translate.data.repositories.dictionary.DictionaryRepositoryImpl;
 import com.celt.translate.data.repositories.translate.TranslateRepository;
 import com.celt.translate.data.repositories.translate.TranslateRepositoryImpl;
 import dagger.Module;
@@ -19,6 +21,13 @@ public class RepositoriesModule {
     @Singleton
     TranslateRepository provideReportsRepository() {
         return new TranslateRepositoryImpl();
+    }
+
+    @Provides
+    @NonNull
+    @Singleton
+    DictionaryRepository provideDictionaryRepository() {
+        return new DictionaryRepositoryImpl();
     }
 
     @Provides

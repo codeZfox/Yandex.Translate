@@ -3,7 +3,9 @@ package com.celt.translate.business.translate;
 import com.celt.translate.business.models.Lang;
 import com.celt.translate.dagger.Components;
 import com.celt.translate.business.models.Translate;
+import com.celt.translate.data.models.LookupResponse;
 import com.celt.translate.data.repositories.database.DatabaseRepository;
+import com.celt.translate.data.repositories.dictionary.DictionaryRepository;
 import com.celt.translate.data.repositories.translate.TranslateRepository;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
@@ -19,6 +21,9 @@ public class TranslateInteractorImpl implements TranslateInteractor {
 
     @Inject
     public TranslateRepository repository;
+
+    @Inject
+    public DictionaryRepository dictionaryRepository;
 
     @Inject
     public DatabaseRepository databaseRepository;
@@ -49,11 +54,15 @@ public class TranslateInteractorImpl implements TranslateInteractor {
                         databaseRepository.updateTranslate(item);
                         return Single.just(item);
                     } else {
-                        return repository.translate(text, langFrom.getCode() + "-" + langTo.getCode())
+                        return repository.translate(text, getLangLang(langFrom, langTo))
                                 .flatMap(response -> databaseRepository.saveTranslate(new Translate(text, response.getText().get(0), langFrom, langTo)));
                     }
                 });
 
+    }
+
+    private String getLangLang(Lang langFrom, Lang langTo) {
+        return langFrom.getCode() + "-" + langTo.getCode();
     }
 
     public Observable<Translate> getHistory() {
@@ -64,8 +73,12 @@ public class TranslateInteractorImpl implements TranslateInteractor {
         return databaseRepository.getFavorites();
     }
 
-    public Completable mark(Translate item){
+    public Completable mark(Translate item) {
         return databaseRepository.mark(item);
     }
 
+    @Override
+    public Single<LookupResponse> lookup(String text, Lang langFrom, Lang langTo, String ui) {
+        return dictionaryRepository.lookup(text, getLangLang(langFrom, langTo), ui);
+    }
 }

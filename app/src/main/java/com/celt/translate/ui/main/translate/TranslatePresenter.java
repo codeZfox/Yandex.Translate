@@ -22,10 +22,11 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     @Inject
     public TranslateInteractor interactor;
 
-    private Lang langFrom;
-    private Lang langTo;
+    private Lang langSource;
+    private Lang langTarget;
 
-    private String text = "";
+    private String textSource = "";
+    private String textTarget = "";
 
     private Handler handlerForSearch = new Handler();
 
@@ -34,18 +35,19 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     public TranslatePresenter() {
         Components.getAppComponent().inject(this);
 
-        langFrom = new Lang("ru", "Русский");
-        langTo = new Lang("en", "Английский");
+        langSource = new Lang("ru", "Русский");
+        langTarget = new Lang("en", "Английский");
 
-        getViewState().setLangFrom(langFrom);
-        getViewState().setLangTo(langTo);
+        getViewState().setLangSource(langSource);
+        getViewState().setLangTarget(langTarget);
     }
 
     public void translate(String text) {
-        this.text = text;
+        getViewState().hideDictionaryInfo();
+        this.textSource = text;
         if (!text.trim().isEmpty()) {
             handlerForSearch.removeCallbacksAndMessages(null);
-            handlerForSearch.postDelayed(() -> translateText(text, langFrom, langTo), 400L);
+            handlerForSearch.postDelayed(() -> translateText(text, langSource, langTarget), 400L);
         } else {
             getViewState().showTranslate("");
         }
@@ -53,8 +55,8 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
     public void playText() {
         resetVocalizer();
-        if (!text.isEmpty()) {
-            vocalizer = Vocalizer.createVocalizer(Vocalizer.Language.RUSSIAN, text, false, Vocalizer.Voice.JANE);
+        if (!textSource.isEmpty()) {
+            vocalizer = Vocalizer.createVocalizer(Vocalizer.Language.RUSSIAN, textSource, false, Vocalizer.Voice.JANE);
             vocalizer.setListener(new VocalizerListener() {
                 @Override
                 public void onSynthesisBegin(Vocalizer vocalizer) {
@@ -89,45 +91,55 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     }
 
     private void translate() {
-        translate(text);
+        translate(textSource);
     }
 
     private void translateText(String text, Lang langFrom, Lang langTo) {
         interactor.translate(text, langFrom, langTo)
+                .doOnSuccess(translate -> {
+                    interactor.lookup(text, langFrom, langTo, "ru")
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(response -> {
+                                getViewState().showDictionaryInfo(response.def);
+                            }, Throwable::printStackTrace);
+                    ;
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
+                    textTarget = response.translation;
                     getViewState().showTranslate(response.translation);
                 }, Throwable::printStackTrace);
     }
 
     public void clickTextViewLangFrom() {
         resetVocalizer();
-        getViewState().openSelectLangFromScreen(langFrom);
+        getViewState().openSelectLangFromScreen(langSource);
     }
 
     public void clickTextViewLangTo() {
         resetVocalizer();
-        getViewState().openSelectLangToScreen(langTo);
+        getViewState().openSelectLangToScreen(langTarget);
     }
 
-    public void setLangFrom(Lang lang) {
-        this.langFrom = lang;
-        getViewState().setLangFrom(this.langFrom);
+    public void setLangSource(Lang lang) {
+        this.langSource = lang;
+        getViewState().setLangSource(this.langSource);
         translate();
     }
 
-    public void setLangTo(Lang lang) {
-        this.langTo = lang;
-        getViewState().setLangTo(this.langTo);
+    public void setLangTarget(Lang lang) {
+        this.langTarget = lang;
+        getViewState().setLangTarget(this.langTarget);
         translate();
     }
 
     public void swapLang() {
-        Lang temp = langTo;
-        langTo = langFrom;
-        langFrom = temp;
-        translate();
+        Lang temp = langTarget;
+        langTarget = langSource;
+        langSource = temp;
+        getViewState().setSourceText(textTarget);
+//        translate(textTarget);
     }
 
     private void resetVocalizer() {
@@ -141,5 +153,14 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     public void onDestroy() {
         super.onDestroy();
         resetVocalizer();
+    }
+
+    public void setTextSource(String item) {
+        Lang temp = langTarget;
+        langTarget = langSource;
+        langSource = temp;
+        getViewState().setLangSource(langSource);
+        getViewState().setLangTarget(langTarget);
+        getViewState().setSourceText(item);
     }
 }

@@ -5,19 +5,31 @@ import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 import com.celt.translate.business.models.Lang;
+import com.celt.translate.data.models.dictionary.Def;
+import com.celt.translate.ui.base.AddToEndSingleByTagStateStrategy;
+
+import java.util.List;
 
 @StateStrategyType(AddToEndSingleStrategy.class)
 public interface TranslateView extends MvpView {
 
-    void setLangFrom(Lang lang);
+    void setLangSource(Lang lang);
 
-    void setLangTo(Lang lang);
+    void setLangTarget(Lang lang);
 
 //    @StateStrategyType(value = AddToEndSingleByTagStateStrategy.class, tag = "showTranslate")
 //    void showTranslate(List<String> list);
 
-//    @StateStrategyType(value = AddToEndSingleByTagStateStrategy.class, tag = "showTranslate")
+    //    @StateStrategyType(value = AddToEndSingleByTagStateStrategy.class, tag = "showTranslate")
     void showTranslate(String text);
+
+    void setSourceText(String textTarget);
+
+    @StateStrategyType(value = AddToEndSingleByTagStateStrategy.class, tag = "DictionaryInfo")
+    void showDictionaryInfo(List<Def> response);
+
+    @StateStrategyType(value = AddToEndSingleByTagStateStrategy.class, tag = "DictionaryInfo")
+    void hideDictionaryInfo();
 
     @StateStrategyType(OneExecutionStateStrategy.class)
     void openSelectLangFromScreen(Lang langFrom);
@@ -26,4 +38,5 @@ public interface TranslateView extends MvpView {
     void openSelectLangToScreen(Lang langFrom);
 
     void showAnimationPlayText(boolean isPlay);
+
 }

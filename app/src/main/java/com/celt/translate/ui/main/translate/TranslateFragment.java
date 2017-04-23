@@ -3,6 +3,8 @@ package com.celt.translate.ui.main.translate;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -20,13 +22,16 @@ import android.widget.TextView;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.celt.translate.R;
 import com.celt.translate.business.models.Lang;
+import com.celt.translate.data.models.dictionary.Def;
 import com.celt.translate.ui.base.AbsFragment;
 import com.celt.translate.ui.base.SimpleTextWatcher;
 import com.celt.translate.ui.selectlang.SelectLangActivity;
 
+import java.util.List;
+
 import static android.app.Activity.RESULT_OK;
+import static com.celt.translate.ui.base.KeyboardUtils.hideSoftKeyboard;
 import static com.celt.translate.ui.base.KeyboardUtils.setupUI;
-import static com.celt.translate.ui.base.KeyboardUtils.showSoftKeyboard;
 
 public class TranslateFragment extends AbsFragment implements TranslateView {
 
@@ -39,18 +44,27 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
     }
 
     private TextView textViewLangFrom, textViewLangTo;
+    private EditText editText;
     private TextView translatedText;
     private ImageView btnPlayText;
     private View btnClearText;
 
     private int position;
-    private EditText editText;
     private boolean isSwap = false;
     private static int ANIMATION_DURATION = 300;
+
+    private DictionaryAdapter adapter = new DictionaryAdapter();
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
+        adapter.setOnClickLister(item -> presenter.setTextSource(item));
+
 
         editText = (EditText) view.findViewById(R.id.editText);
         translatedText = (TextView) view.findViewById(R.id.textView_translated);
@@ -60,6 +74,10 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
             editText.setText("");
 //            presenter.translate("");
         });
+
+
+        btnPlayText = (ImageView) view.findViewById(R.id.btnPlayText);
+        btnPlayText.setOnClickListener(v -> presenter.playText());
 
         textViewLangFrom = (TextView) view.findViewById(R.id.textView_lang_from);
         textViewLangTo = (TextView) view.findViewById(R.id.textView_lang_to);
@@ -124,6 +142,7 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
         editText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 presenter.translate(v.getText().toString());
+                hideSoftKeyboard(getActivity());
             }
             return true;
         });
@@ -138,8 +157,6 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
                                         }
         );
 
-        btnPlayText = (ImageView) view.findViewById(R.id.btnPlayText);
-        btnPlayText.setOnClickListener(v -> presenter.playText());
         setupUI(getActivity(), view);
     }
 
@@ -158,12 +175,12 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
     }
 
     @Override
-    public void setLangFrom(Lang lang) {
+    public void setLangSource(Lang lang) {
         getTextViewLangFrom().setText(lang.getUi());
     }
 
     @Override
-    public void setLangTo(Lang lang) {
+    public void setLangTarget(Lang lang) {
         getTextViewLangTo().setText(lang.getUi());
     }
 
@@ -184,6 +201,22 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
         translatedText.setText(text);
     }
 
+    @Override
+    public void setSourceText(String text) {
+        editText.setText(text);
+    }
+
+    @Override
+    public void showDictionaryInfo(List<Def> items) {
+        adapter.setItems(items);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void hideDictionaryInfo() {
+        adapter.clear();
+        adapter.notifyDataSetChanged();
+    }
 
     private static final int REQUEST_CODE_LANG_FROM = 0;
     private static final int REQUEST_CODE_LANG_TO = 1;
@@ -202,17 +235,13 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-
-            editText.requestFocus();
-            showSoftKeyboard(getActivity());
-
             switch (requestCode) {
                 case REQUEST_CODE_LANG_FROM: {
-                    presenter.setLangFrom(data.getParcelableExtra(Lang.NAME));
+                    presenter.setLangSource(data.getParcelableExtra(Lang.NAME));
                     break;
                 }
                 case REQUEST_CODE_LANG_TO: {
-                    presenter.setLangTo(data.getParcelableExtra(Lang.NAME));
+                    presenter.setLangTarget(data.getParcelableExtra(Lang.NAME));
                     break;
                 }
             }
@@ -223,11 +252,11 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
 
     @Override
     public void showAnimationPlayText(boolean isPlay) {
-        btnPlayText.setImageResource(isPlay ? R.drawable.ic_spinner : R.drawable.ic_sound_active);
+        btnPlayText.setImageDrawable(getResources().getDrawable(isPlay ? R.drawable.ic_spinner : R.drawable.ic_sound_active));
         if (isPlay) {
             if (anim == null) {
-                int pivotX = (btnPlayText.getWidth() - btnPlayText.getPaddingLeft() - btnPlayText.getPaddingRight()) / 2;
-                int pivotY = (btnPlayText.getHeight() - btnPlayText.getPaddingTop() - btnPlayText.getPaddingBottom()) / 2;
+                int pivotX = (btnPlayText.getWidth()/2);
+                int pivotY = (btnPlayText.getHeight()/2);
                 anim = new RotateAnimation(0f, 350f, pivotX, pivotY);
                 anim.setInterpolator(new LinearInterpolator());
                 anim.setRepeatCount(Animation.INFINITE);

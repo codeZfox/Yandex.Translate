@@ -9,7 +9,6 @@ buildscript {
 
         classpath 'me.tatarka:gradle-retrolambda:3.6.0'
 
-        classpath "net.rdrei.android.buildtimetracker:gradle-plugin:0.9.0"
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.6.2'
     }
 }
@@ -23,26 +22,4 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
-}
-
-apply plugin: "build-time-tracker"
-
-buildtimetracker {
-    reporters {
-        csv {
-            output "build/times.csv"
-            append true
-            header false
-        }
-
-        summary {
-            ordered false
-            threshold 50
-            barstyle "unicode"
-        }
-
-        csvSummary {
-            csv "build/times.csv"
-        }
-    }
 }
