@@ -1,16 +1,17 @@
-package com.celt.translate.ui.selectlang;
+package com.celt.translate.ui.main.localdata;
 
 import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
-import com.celt.translate.business.models.Lang;
+import com.celt.translate.business.models.Translate;
 
 import java.util.List;
 
 @StateStrategyType(AddToEndSingleStrategy.class)
-public interface SelectLang extends MvpView {
+public interface HistoryView extends MvpView {
 
-//    void setLangs(LangsResponse langs);
+    void setHistory(List<Translate> langs);
 
-    void setLangs(List<Lang> langs);
+    void updateHistory();
+
 }

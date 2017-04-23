@@ -18,11 +18,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.celt.translate.R;
 import com.celt.translate.business.models.Lang;
+import com.celt.translate.ui.base.AbsFragment;
 import com.celt.translate.ui.base.SimpleTextWatcher;
 import com.celt.translate.ui.selectlang.SelectLangActivity;
 
@@ -30,23 +29,19 @@ import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
-public class TranslateFragment extends MvpAppCompatFragment implements TranslateView {
+public class TranslateFragment extends AbsFragment implements TranslateView {
 
     @InjectPresenter
     TranslatePresenter presenter;
-    private ImageView btnPlayText;
 
-    @ProvidePresenter
-    TranslatePresenter providePresenter() {
-        return new TranslatePresenter(getContext());
-    }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.screen_translate, container, false);
     }
 
     private TextView textViewLangFrom, textViewLangTo;
-    TextView translatedText;
+    private TextView translatedText;
+    private ImageView btnPlayText;
 
     private int position;
     private EditText editText;
@@ -178,7 +173,7 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
 
     @Override
     public void showTranslate(String text) {
-        translatedText.setText("");
+        translatedText.setText(text);
     }
 
 

@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.celt.translate"
-        minSdkVersion 10
+        minSdkVersion 15
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -37,6 +37,11 @@ ext {
     okhttpVersion = '3.4.1'
 
     rxjava = '2.0.1'
+
+    orma = '4.2.3'
+
+    adapterDelegatesVersion = '3.0.1'
+
 }
 
 dependencies {
@@ -63,7 +68,10 @@ dependencies {
     compile "io.reactivex.rxjava2:rxandroid:$rxjava"
     compile "io.reactivex.rxjava2:rxjava:$rxjava"
 
-    compile 'com.j256.ormlite:ormlite-android:5.0'
-
     compile 'com.yandex.android:speechkit:2.5.0'
+
+    compile "com.hannesdorfmann:adapterdelegates3:$adapterDelegatesVersion"
+
+    annotationProcessor "com.github.gfx.android.orma:orma-processor:$orma"
+    compile "com.github.gfx.android.orma:orma:$orma"
 }

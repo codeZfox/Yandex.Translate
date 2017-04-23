@@ -4,7 +4,7 @@ import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
-import com.celt.translate.AddToEndSingleByTagStateStrategy;
+import com.celt.translate.ui.base.AddToEndSingleByTagStateStrategy;
 import com.celt.translate.business.models.Lang;
 
 import java.util.List;

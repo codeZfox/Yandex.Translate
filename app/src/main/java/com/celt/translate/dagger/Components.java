@@ -1,6 +1,7 @@
 package com.celt.translate.dagger;
 
 import android.content.Context;
+import com.celt.translate.dagger.modules.AppModule;
 import com.celt.translate.dagger.modules.InteractorModule;
 import com.celt.translate.dagger.modules.RepositoriesModule;
 
@@ -33,6 +34,7 @@ public class Components {
 
     private AppComponent buildAppComponent(Context appContext) {
         return DaggerAppComponent.builder()
+                .appModule(new AppModule(appContext))
                 .interactorModule(new InteractorModule())
                 .repositoriesModule(new RepositoriesModule())
                 .build();

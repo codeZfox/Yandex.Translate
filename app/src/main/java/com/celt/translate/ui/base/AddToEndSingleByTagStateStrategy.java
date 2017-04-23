@@ -1,4 +1,4 @@
-package com.celt.translate;
+package com.celt.translate.ui.base;
 
 
 import com.arellomobile.mvp.MvpView;

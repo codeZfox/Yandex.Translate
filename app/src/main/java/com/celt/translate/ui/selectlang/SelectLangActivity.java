@@ -15,7 +15,7 @@ import com.celt.translate.business.models.Lang;
 
 import java.util.List;
 
-public class SelectLangActivity extends MvpAppCompatActivity implements SelectLang {
+public class SelectLangActivity extends MvpAppCompatActivity implements SelectLangView {
 
     public static Intent newIntent(Context context, Lang lang) {
 

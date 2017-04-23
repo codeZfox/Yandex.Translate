@@ -1,6 +1,5 @@
 package com.celt.translate.ui.main.translate;
 
-import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 import com.arellomobile.mvp.InjectViewState;
@@ -32,7 +31,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
     private Vocalizer vocalizer;
 
-    public TranslatePresenter(Context context) {
+    public TranslatePresenter() {
         Components.getAppComponent().inject(this);
 
         langFrom = new Lang("ru", "Русский");
@@ -44,9 +43,9 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
     public void translate(String text) {
         this.text = text;
-        if (!text.isEmpty()) {
+        if (!text.trim().isEmpty()) {
             handlerForSearch.removeCallbacksAndMessages(null);
-            handlerForSearch.postDelayed(() -> translateText(text), 300L);
+            handlerForSearch.postDelayed(() -> translateText(text, langFrom, langTo), 400L);
         } else {
             getViewState().showTranslate("");
         }
@@ -93,12 +92,12 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
         translate(text);
     }
 
-    private void translateText(String text) {
+    private void translateText(String text, Lang langFrom, Lang langTo) {
         interactor.translate(text, langFrom, langTo)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
-                    getViewState().showTranslate(response.getText());
+                    getViewState().showTranslate(response.translation);
                 }, Throwable::printStackTrace);
     }
 

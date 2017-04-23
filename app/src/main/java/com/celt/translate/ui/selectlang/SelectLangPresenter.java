@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @InjectViewState
-public class SelectLangPresenter extends MvpPresenter<SelectLang> {
+public class SelectLangPresenter extends MvpPresenter<SelectLangView> {
 
     @Inject
     public TranslateInteractor interactor;

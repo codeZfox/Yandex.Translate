@@ -1,6 +1,9 @@
 package com.celt.translate.dagger.modules;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+import com.celt.translate.data.repositories.database.DatabaseRepository;
+import com.celt.translate.data.repositories.database.DatabaseRepositoryImpl;
 import com.celt.translate.data.repositories.translate.TranslateRepository;
 import com.celt.translate.data.repositories.translate.TranslateRepositoryImpl;
 import dagger.Module;
@@ -16,6 +19,13 @@ public class RepositoriesModule {
     @Singleton
     TranslateRepository provideReportsRepository() {
         return new TranslateRepositoryImpl();
+    }
+
+    @Provides
+    @NonNull
+    @Singleton
+    DatabaseRepository provideDatabaseRepository(Context context) {
+        return new DatabaseRepositoryImpl(context);
     }
 }
 
