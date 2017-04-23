@@ -27,4 +27,6 @@ public interface TranslateView extends MvpView {
 
     @StateStrategyType(OneExecutionStateStrategy.class)
     void openSelectLangToScreen(Lang langFrom);
+
+    void showAnimationPlayText(boolean isPlay);
 }

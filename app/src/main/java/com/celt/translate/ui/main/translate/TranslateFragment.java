@@ -9,9 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.arellomobile.mvp.MvpAppCompatFragment;
@@ -30,6 +34,7 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
 
     @InjectPresenter
     TranslatePresenter presenter;
+    private ImageView btnPlayText;
 
     @ProvidePresenter
     TranslatePresenter providePresenter() {
@@ -58,6 +63,9 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
         textViewLangFrom = (TextView) view.findViewById(R.id.textView_lang_from);
         textViewLangTo = (TextView) view.findViewById(R.id.textView_lang_to);
 
+        editText.setHorizontallyScrolling(false);
+        editText.setMinLines(4);
+        editText.setMaxLines(6);
 
         getTextViewLangFrom().setOnClickListener(v -> presenter.clickTextViewLangFrom());
         getTextViewLangTo().setOnClickListener(v -> presenter.clickTextViewLangTo());
@@ -127,6 +135,9 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
                                             }
                                         }
         );
+
+        btnPlayText = (ImageView) view.findViewById(R.id.btnPlayText);
+        btnPlayText.setOnClickListener(v -> presenter.playText());
     }
 
     private TextView getTextViewLangFrom() {
@@ -197,6 +208,28 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
                     presenter.setLangTo(data.getParcelableExtra(Lang.NAME));
                     break;
                 }
+            }
+        }
+    }
+
+    private RotateAnimation anim;
+
+    @Override
+    public void showAnimationPlayText(boolean isPlay) {
+        btnPlayText.setImageResource(isPlay ? R.drawable.ic_spinner : R.drawable.ic_sound_active);
+        if (isPlay) {
+            if (anim == null) {
+                int pivotX = (btnPlayText.getWidth() - btnPlayText.getPaddingLeft() - btnPlayText.getPaddingRight()) / 2;
+                int pivotY = (btnPlayText.getHeight() - btnPlayText.getPaddingTop() - btnPlayText.getPaddingBottom()) / 2;
+                anim = new RotateAnimation(0f, 350f, pivotX, pivotY);
+                anim.setInterpolator(new LinearInterpolator());
+                anim.setRepeatCount(Animation.INFINITE);
+                anim.setDuration(700);
+            }
+            btnPlayText.startAnimation(anim);
+        } else {
+            if (anim != null) {
+                anim.cancel();
             }
         }
     }

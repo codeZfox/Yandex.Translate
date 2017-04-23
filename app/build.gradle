@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.celt.translate"
-        minSdkVersion 9
+        minSdkVersion 10
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -64,4 +64,6 @@ dependencies {
     compile "io.reactivex.rxjava2:rxjava:$rxjava"
 
     compile 'com.j256.ormlite:ormlite-android:5.0'
+
+    compile 'com.yandex.android:speechkit:2.5.0'
 }

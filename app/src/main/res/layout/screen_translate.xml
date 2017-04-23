@@ -63,16 +63,36 @@
 
     </RelativeLayout>
 
-    <EditText
+    <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="92dp"
-            android:background="@drawable/background_edit"
-            android:id="@+id/editText"
-            android:layout_margin="12dp"
-            android:padding="8dp"
-            android:gravity="top"
-            android:imeOptions="actionDone"
-            android:singleLine="true"
-            />
+            android:layout_height="wrap_content"
+            >
+
+        <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_edit"
+                android:id="@+id/editText"
+                android:layout_margin="12dp"
+                android:imeOptions="actionDone"
+                android:gravity="top"
+                android:paddingTop="8dp"
+                android:paddingLeft="8dp"
+                android:paddingBottom="8dp"
+                android:paddingRight="40dp"
+                android:singleLine="true"
+                />
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnPlayText"
+                android:src="@drawable/ic_sound_active"
+                android:layout_alignRight="@+id/editText"
+                android:layout_alignTop="@+id/editText"
+                android:padding="4dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                />
+    </RelativeLayout>
 
 </LinearLayout>
