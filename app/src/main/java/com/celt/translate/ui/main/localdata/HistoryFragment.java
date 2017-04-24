@@ -2,6 +2,7 @@ package com.celt.translate.ui.main.localdata;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -68,12 +69,29 @@ public class HistoryFragment extends AbsFragment implements HistoryView {
 
         });
 
-        adapter.setOnLongClickLister(item -> presenter.delete(item));
+        adapter.setOnLongClickLister(item -> presenter.longClick(item));
 
         adapter.setOnClickListerMark(item -> presenter.mark(item));
 
         imageViewPlaceHolder = (ImageView) view.findViewById(R.id.imageViewPlaceHolder);
         textViewPlaceHolder = (TextView) view.findViewById(R.id.textViewPlaceHolder);
+    }
+
+    @Override
+    public void showDeleteDialog(Translate item, boolean show){
+        if(show) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle(R.string.delete_tr)
+                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                        presenter.delete(item);
+                    })
+                    .setNegativeButton(android.R.string.cancel, (dialog, id) -> dialog.cancel());
+            builder.setOnDismissListener(dialog -> {
+                presenter.cancelDeleteDialog();
+            });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
     }
 
     @Override

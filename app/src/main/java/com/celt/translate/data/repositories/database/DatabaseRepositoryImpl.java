@@ -52,6 +52,7 @@ public class DatabaseRepositoryImpl implements DatabaseRepository {
                 .sourceEq(text)
                 .targetLangEq(langTarget)
                 .sourceLangEq(langSource)
+                .isHistoryEq(true)
                 .orderByIsHistoryDesc()
                 .toList());
 
@@ -64,6 +65,24 @@ public class DatabaseRepositoryImpl implements DatabaseRepository {
                 .idEq(item.id)
                 .isFavorite(!item.isFavorite)
                 .dateFavorite(new Date())
+                .executeAsSingle()
+                .toCompletable();
+    }
+
+    @Override
+    public Completable mark(Translate item, boolean mark) {
+        return orma.updateTranslate()
+                .idEq(item.id)
+                .isFavorite(mark)
+                .dateFavorite(new Date())
+                .executeAsSingle()
+                .toCompletable();
+    }
+
+    public Completable removeFromHistory(Translate item){
+        return orma.updateTranslate()
+                .idEq(item.id)
+                .isHistory(false)
                 .executeAsSingle()
                 .toCompletable();
     }

@@ -21,5 +21,9 @@ public interface TranslateInteractor {
 
     Completable mark(Translate item);
 
+    Completable mark(Translate item, boolean mark);
+
     Single<LookupResponse> lookup(String text, Lang langFrom, Lang langTo, String ru);
+
+    Completable removeFromHistory(Translate item);
 }

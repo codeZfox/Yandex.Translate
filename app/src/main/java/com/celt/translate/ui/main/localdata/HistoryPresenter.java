@@ -80,7 +80,36 @@ public class HistoryPresenter extends MvpPresenter<HistoryView> {
                 }, Throwable::printStackTrace);
     }
 
-    public void delete(Translate item) {
+    public void longClick(Translate item) {
+        getViewState().showDeleteDialog(item, true);
+    }
 
+    public void cancelDeleteDialog() {
+        getViewState().showDeleteDialog(null, false);
+    }
+
+    public void delete(Translate item) {
+        switch (type) {
+            case HISTORY: {
+                interactor.removeFromHistory(item)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(() -> {
+                            items.remove(item);
+                            getViewState().updateHistory();
+                        }, Throwable::printStackTrace);
+                break;
+            }
+            case FAVORITES: {
+                interactor.mark(item, false)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(() -> {
+                            items.remove(item);
+                            getViewState().updateHistory();
+                        }, Throwable::printStackTrace);
+                break;
+            }
+        }
     }
 }

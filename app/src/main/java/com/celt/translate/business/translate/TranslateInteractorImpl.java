@@ -81,6 +81,14 @@ public class TranslateInteractorImpl implements TranslateInteractor {
         return databaseRepository.mark(item);
     }
 
+    public Completable mark(Translate item, boolean mark) {
+        return databaseRepository.mark(item, mark);
+    }
+
+    public Completable removeFromHistory(Translate item){
+        return databaseRepository.removeFromHistory(item);
+    }
+
     @Override
     public Single<LookupResponse> lookup(String text, Lang langFrom, Lang langTo, String ui) {
         return dictionaryRepository.lookup(text, getLangLang(langFrom, langTo), ui);

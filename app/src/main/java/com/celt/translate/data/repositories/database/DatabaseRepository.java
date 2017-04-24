@@ -8,15 +8,19 @@ import java.util.List;
 
 public interface DatabaseRepository {
 
-     Observable<Translate> getHistory();
+    Observable<Translate> getHistory();
 
-     Observable<Translate> getFavorites();
+    Observable<Translate> getFavorites();
 
-     Observable<Translate> saveTranslate(Translate translate);
+    Observable<Translate> saveTranslate(Translate translate);
 
-     Observable<List<Translate>> findTranslate(String text, String langSource, String langTarget);
+    Observable<List<Translate>> findTranslate(String text, String langSource, String langTarget);
 
-     void updateTranslate(Translate translate);
+    void updateTranslate(Translate translate);
 
-     Completable mark(Translate item);
+    Completable mark(Translate item);
+
+    Completable mark(Translate item, boolean mark);
+
+    Completable removeFromHistory(Translate item);
 }
