@@ -46,6 +46,16 @@
             <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
+                    android:id="@+id/btnShare"
+                    android:src="@drawable/ic_share"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    />
+
+            <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:id="@+id/btnBookMaker"
                     android:src="@drawable/ic_fav"
                     android:layout_marginRight="20dp"

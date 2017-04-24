@@ -39,7 +39,6 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
     @InjectPresenter
     TranslatePresenter presenter;
 
-    private ImageView bookMaker;
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -49,6 +48,9 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
     private TextView textViewLangFrom, textViewLangTo;
     private EditText editText;
     private TextView translatedText;
+    private ImageView bookMaker;
+    private View btnShare;
+
     private ImageView btnPlayTextSource;
     private ImageView btnPlayTextTarget;
     private View btnClearText;
@@ -91,6 +93,8 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
 
         bookMaker = ((ImageView) getView().findViewById(R.id.btnBookMaker));
         bookMaker.setOnClickListener(v -> presenter.bookmaker());
+        btnShare = getView().findViewById(R.id.btnShare);
+        btnShare.setOnClickListener(v -> shareText(translatedText.getText().toString()));
 
         textViewLangFrom = (TextView) view.findViewById(R.id.textView_lang_from);
         textViewLangTo = (TextView) view.findViewById(R.id.textView_lang_to);
@@ -180,14 +184,17 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
 
     @Override
     public void showBtnSource(boolean isShow) {
-        btnClearText.setVisibility(isShow ? View.VISIBLE : View.GONE);
-        btnPlayTextSource.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        int visibility = isShow ? View.VISIBLE : View.GONE;
+        btnClearText.setVisibility(visibility);
+        btnPlayTextSource.setVisibility(visibility);
     }
 
     @Override
     public void showBtnTarget(boolean isShow) {
-        bookMaker.setVisibility(isShow ? View.VISIBLE : View.GONE);
-        btnPlayTextTarget.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        int visibility = isShow ? View.VISIBLE : View.GONE;
+        bookMaker.setVisibility(visibility);
+        btnPlayTextTarget.setVisibility(visibility);
+        btnShare.setVisibility(visibility);
     }
 
     private TextView getTextViewLangFrom() {
@@ -346,5 +353,12 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
     @Override
     public void update() {
         presenter.update();
+    }
+
+    private void shareText(String text) {
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, text);
+        startActivity(Intent.createChooser(sharingIntent, null));
     }
 }
