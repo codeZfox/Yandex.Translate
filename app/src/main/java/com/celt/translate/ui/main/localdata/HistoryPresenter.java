@@ -30,6 +30,7 @@ public class HistoryPresenter extends MvpPresenter<HistoryView> {
         Components.getAppComponent().inject(this);
 
         getViewState().setItems(items);
+        getViewState().showBtnClear(false);
 
     }
 

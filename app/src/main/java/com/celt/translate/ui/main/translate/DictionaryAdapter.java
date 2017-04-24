@@ -25,6 +25,7 @@ public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.Vi
 
     private List<Def> items = new ArrayList<>();
     private OnClickItemListener<String> onClickLister;
+    private OnClickItemListener<String> onLongClickLister;
 
     public void setItems(List<Def> items) {
         this.items = items;
@@ -36,6 +37,10 @@ public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.Vi
 
     public void setOnClickLister(OnClickItemListener<String> onClickLister) {
         this.onClickLister = onClickLister;
+    }
+
+    public void setOnLongClickLister(OnClickItemListener<String> onLongClickLister) {
+        this.onLongClickLister = onLongClickLister;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -99,6 +104,11 @@ public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.Vi
 
             TextView view = getTextView1(holder, 8, tr.getText(), R.color.colorTr, false);
             view.setOnClickListener(v -> onClickLister.onClick(view.getText().toString()));
+            view.setOnLongClickListener( v -> {
+                        onLongClickLister.onClick(view.getText().toString());
+                        return true;
+                    }
+            );
             flowLayout.addView(view);
 
             if (tr.getGen() != null) {
@@ -110,6 +120,11 @@ public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.Vi
                     flowLayout.addView(getTextViewSep(holder));
                     TextView view1 = getTextView1(holder, 0, syn.getText(), R.color.colorTr, false);
                     view1.setOnClickListener(v -> onClickLister.onClick(view.getText().toString()));
+                    view1.setOnLongClickListener( v -> {
+                                onLongClickLister.onClick(view.getText().toString());
+                                return true;
+                            }
+                    );
                     flowLayout.addView(view1);
                     if (syn.getGen() != null) {
                         flowLayout.addView(getTextView1(holder, 0, " " + syn.getGen(), R.color.colorGray, true));

@@ -1,9 +1,13 @@
 package com.celt.translate.ui.main.translate;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.celt.translate.R;
 import com.celt.translate.business.models.Lang;
 import com.celt.translate.business.models.Translate;
 import com.celt.translate.business.translate.TranslateInteractor;
@@ -16,6 +20,8 @@ import ru.yandex.speechkit.Vocalizer;
 import ru.yandex.speechkit.VocalizerListener;
 
 import javax.inject.Inject;
+
+import static android.content.Context.CLIPBOARD_SERVICE;
 
 @InjectViewState
 public class TranslatePresenter extends MvpPresenter<TranslateView> {
@@ -247,5 +253,16 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                     this.translate = translate1;
                     getViewState().showBookMaker(translate.isFavorite);
                 }, Throwable::printStackTrace);
+    }
+
+    public void copySourceText(Context context) {
+        copyText(context, textTarget);
+    }
+
+    public void copyText(Context context, String text) {
+        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("label", text);
+        clipboard.setPrimaryClip(clip);
+        getViewState().showMessage(context.getString(R.string.translate_copy));
     }
 }

@@ -6,4 +6,5 @@
     <string name="no_translations_in_history">Нет переводов в\nистории</string>
     <string name="no_translations_in_fav">Нет переводов в\nизбранном</string>
     <string name="delete_tr">Удалить перевод?</string>
+    <string name="translate_copy">Перевод скопирован</string>
 </resources>

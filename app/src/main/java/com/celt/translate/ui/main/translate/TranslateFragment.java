@@ -68,10 +68,15 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         adapter.setOnClickLister(item -> presenter.setTextSource(item));
+        adapter.setOnLongClickLister(item -> presenter.copyText(getContext(), item));
 
 
         editText = (EditText) view.findViewById(R.id.editText);
         translatedText = (TextView) view.findViewById(R.id.textView_translated);
+        translatedText.setOnClickListener(v -> {
+            presenter.copySourceText(getContext());
+        });
+
         btnClearText = view.findViewById(R.id.btnClearText);
         btnClearText.setOnClickListener(v -> {
             presenter.setTextSource("");
