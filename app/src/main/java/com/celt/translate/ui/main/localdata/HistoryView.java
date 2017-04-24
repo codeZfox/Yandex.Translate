@@ -14,4 +14,5 @@ public interface HistoryView extends MvpView {
 
     void updateHistory();
 
+    void showPlaceHolder(TypeLocalFragment type, boolean isShow);
 }

@@ -2,4 +2,7 @@
     <string name="app_name">Yandex.Translate</string>
     <string name="history">История</string>
     <string name="favorites">Избранное</string>
+
+    <string name="no_translations_in_history">Нет переводов в\nистории</string>
+    <string name="no_translations_in_fav">Нет переводов в\nизбранном</string>
 </resources>

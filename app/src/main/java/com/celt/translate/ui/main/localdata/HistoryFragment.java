@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.celt.translate.R;
@@ -32,15 +34,18 @@ public class HistoryFragment extends AbsFragment implements HistoryView {
     @InjectPresenter
     HistoryPresenter presenter;
 
+    private ImageView imageViewPlaceHolder;
+    private TextView  textViewPlaceHolder;
+
     @ProvidePresenter
-    public HistoryPresenter providePresenter(){
+    public HistoryPresenter providePresenter() {
         return new HistoryPresenter(TypeLocalFragment.valueOf(getArguments().getString(ARG_TYPE_FRAGMENT)));
     }
 
     private HistoryAdapter adapter;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.screen_recyclerview, container, false);
+        return inflater.inflate(R.layout.screen_history, container, false);
     }
 
     @Override
@@ -66,6 +71,9 @@ public class HistoryFragment extends AbsFragment implements HistoryView {
         adapter.setOnLongClickLister(item -> presenter.delete(item));
 
         adapter.setOnClickListerMark(item -> presenter.mark(item));
+
+        imageViewPlaceHolder = (ImageView) view.findViewById(R.id.imageViewPlaceHolder);
+        textViewPlaceHolder = (TextView) view.findViewById(R.id.textViewPlaceHolder);
     }
 
     @Override
@@ -76,6 +84,31 @@ public class HistoryFragment extends AbsFragment implements HistoryView {
     @Override
     public void updateHistory() {
         adapter.notifyDataSetChanged();
+    }
+
+
+    @Override
+    public void showPlaceHolder(TypeLocalFragment type, boolean isShow) {
+        switch (type) {
+            case HISTORY: {
+                imageViewPlaceHolder.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
+                textViewPlaceHolder.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
+                if (isShow) {
+                    imageViewPlaceHolder.setImageResource(R.drawable.ic_no_history);
+                    textViewPlaceHolder.setText(getString(R.string.no_translations_in_history));
+                }
+                break;
+            }
+            case FAVORITES: {
+                imageViewPlaceHolder.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
+                textViewPlaceHolder.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
+                if (isShow) {
+                    imageViewPlaceHolder.setImageResource(R.drawable.ic_error_face);
+                    textViewPlaceHolder.setText(getString(R.string.no_translations_in_fav));
+                }
+                break;
+            }
+        }
     }
 
     @Override

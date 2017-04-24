@@ -33,6 +33,9 @@ public class HistoryPresenter extends MvpPresenter<HistoryView> {
 
     public void update() {
         items.clear();
+        getViewState().updateHistory();
+        getViewState().showPlaceHolder(type, items.isEmpty());
+
         switch (type) {
             case HISTORY: {
                 getHistory();
@@ -51,6 +54,7 @@ public class HistoryPresenter extends MvpPresenter<HistoryView> {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
                     items.add(response);
+                    getViewState().showPlaceHolder(type, items.isEmpty());
                     getViewState().updateHistory();
                 }, Throwable::printStackTrace);
     }
@@ -61,6 +65,7 @@ public class HistoryPresenter extends MvpPresenter<HistoryView> {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
                     items.add(response);
+                    getViewState().showPlaceHolder(type, items.isEmpty());
                     getViewState().updateHistory();
                 }, Throwable::printStackTrace);
     }
@@ -71,7 +76,6 @@ public class HistoryPresenter extends MvpPresenter<HistoryView> {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(() -> {
                     item.isFavorite = !item.isFavorite;
-//                    items.set(items.indexOf(item), item);
                     getViewState().updateHistory();
                 }, Throwable::printStackTrace);
     }
