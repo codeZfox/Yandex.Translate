@@ -5,9 +5,12 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -15,8 +18,12 @@ import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.celt.translate.R;
 import com.celt.translate.business.models.Translate;
 import com.celt.translate.ui.base.AbsFragment;
+import com.celt.translate.ui.base.SimpleTextWatcher;
 
 import java.util.List;
+
+import static com.celt.translate.ui.base.KeyboardUtils.hideSoftKeyboard;
+import static com.celt.translate.ui.base.KeyboardUtils.setupUI;
 
 public class HistoryFragment extends AbsFragment implements HistoryView {
 
@@ -36,7 +43,10 @@ public class HistoryFragment extends AbsFragment implements HistoryView {
     HistoryPresenter presenter;
 
     private ImageView imageViewPlaceHolder;
-    private TextView  textViewPlaceHolder;
+    private TextView textViewPlaceHolder;
+
+    private View btnClearText;
+    private EditText editText;
 
     @ProvidePresenter
     public HistoryPresenter providePresenter() {
@@ -75,11 +85,49 @@ public class HistoryFragment extends AbsFragment implements HistoryView {
 
         imageViewPlaceHolder = (ImageView) view.findViewById(R.id.imageViewPlaceHolder);
         textViewPlaceHolder = (TextView) view.findViewById(R.id.textViewPlaceHolder);
+
+        btnClearText = view.findViewById(R.id.btnClearText);
+        btnClearText.setOnClickListener(v -> {
+            editText.setText("");
+            presenter.search("");
+        });
+
+
+        editText = (EditText) view.findViewById(R.id.editText);
+
+        setupUI(getActivity(), view);
+
+        editText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                presenter.search(editText.getText().toString());
+                hideSoftKeyboard(getActivity());
+            }
+            return true;
+        });
+
+        editText.addTextChangedListener(new SimpleTextWatcher() {
+                                            @Override
+                                            public void afterTextChanged(Editable s) {
+                                                presenter.search(s.toString());
+                                            }
+                                        }
+        );
+
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                presenter.search(editText.getText().toString());
+            }
+        });
     }
 
     @Override
-    public void showDeleteDialog(Translate item, boolean show){
-        if(show) {
+    public void showBtnClear(boolean isShow) {
+        btnClearText.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    @Override
+    public void showDeleteDialog(Translate item, boolean show) {
+        if (show) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setTitle(R.string.delete_tr)
                     .setPositiveButton(android.R.string.ok, (dialog, which) -> {
@@ -95,12 +143,12 @@ public class HistoryFragment extends AbsFragment implements HistoryView {
     }
 
     @Override
-    public void setHistory(List<Translate> langs) {
+    public void setItems(List<Translate> langs) {
         adapter.setItems(langs);
     }
 
     @Override
-    public void updateHistory() {
+    public void updateItems() {
         adapter.notifyDataSetChanged();
     }
 

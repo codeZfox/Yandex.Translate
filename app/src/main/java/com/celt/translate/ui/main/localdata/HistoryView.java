@@ -10,11 +10,13 @@ import java.util.List;
 @StateStrategyType(AddToEndSingleStrategy.class)
 public interface HistoryView extends MvpView {
 
-    void setHistory(List<Translate> langs);
+    void setItems(List<Translate> langs);
 
-    void updateHistory();
+    void updateItems();
 
     void showPlaceHolder(TypeLocalFragment type, boolean isShow);
 
     void showDeleteDialog(Translate item, boolean isShow);
+
+    void showBtnClear(boolean isShow);
 }

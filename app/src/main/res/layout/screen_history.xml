@@ -11,6 +11,49 @@
                   android:layout_height="match_parent"
             >
 
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageView2"
+                    android:src="@drawable/ic_magnifier"
+                    android:layout_centerVertical="true"
+                    android:padding="8dp"
+                    android:layout_marginLeft="4dp"
+                    android:clickable="true"
+                    />
+
+            <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editText"
+                    android:hint="Найти в истории"
+                    android:background="@drawable/selector_edittext"
+                    android:paddingLeft="48dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:paddingRight="46dp"
+                    android:textSize="18sp"
+                    android:singleLine="true"
+                    android:imeOptions="actionDone"
+                    />
+
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btnClearText"
+                    android:src="@drawable/ic_delete"
+                    android:layout_centerVertical="true"
+                    android:padding="8dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_alignParentRight="true"
+                    />
+        </RelativeLayout>
+
         <android.support.v7.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
