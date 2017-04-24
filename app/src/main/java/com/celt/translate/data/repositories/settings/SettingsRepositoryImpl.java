@@ -24,6 +24,7 @@ public class SettingsRepositoryImpl implements SettingsRepository {
 
     public String ui;
     private Lang localLang;
+    private String englishDisplayName;
 
     private static final String[] uiArray = {"ru", "en", "tr", "uk"};
 
@@ -31,8 +32,13 @@ public class SettingsRepositoryImpl implements SettingsRepository {
         sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 
         Locale localUi = getCurrentLanguage(context);
-        localLang = new Lang(localUi.getLanguage(), localUi.getDisplayLanguage().substring(0, 1).toUpperCase() + localUi.getDisplayLanguage().substring(1));
+        localLang = new Lang(localUi.getLanguage(), toString(localUi));
         ui = Arrays.asList(uiArray).contains(localLang.getCode()) ? localLang.getCode() : "en";
+        englishDisplayName = toString(Locale.ENGLISH);
+    }
+
+    private String toString(Locale localUi) {
+        return localUi.getDisplayLanguage().substring(0, 1).toUpperCase() + localUi.getDisplayLanguage().substring(1);
     }
 
 
@@ -57,7 +63,7 @@ public class SettingsRepositoryImpl implements SettingsRepository {
     public Single<Lang> getLangTarget() {
         String string = sharedPreferences.getString(LANG_TARGET, "");
         if (string.isEmpty()) {
-            return Single.just(new Lang("en", "English"));
+            return Single.just(new Lang("en", englishDisplayName));
         } else {
             return Single.just(new Gson().fromJson(string, Lang.class));
         }

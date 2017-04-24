@@ -37,8 +37,8 @@ public class TranslateInteractorImpl implements TranslateInteractor {
         Components.getAppComponent().inject(this);
     }
 
-    public Observable<List<Lang>> getLangs(String ui) {
-        return repository.getLangs(ui)
+    public Observable<List<Lang>> getLangs() {
+        return repository.getLangs(settingsRepository.getUI())
                 .map(i -> {
                     List<Lang> list = new ArrayList<>();
                     for (Map.Entry<String, String> entry : i.getLangs().entrySet()) {

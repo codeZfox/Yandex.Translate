@@ -30,7 +30,7 @@ public class SelectLangActivity extends MvpAppCompatActivity implements SelectLa
 
     @ProvidePresenter
     SelectLangPresenter providePresenter() {
-        return new SelectLangPresenter();
+        return new SelectLangPresenter(getIntent().getParcelableExtra(Lang.NAME));
     }
 
     private SelectLangAdapter adapter = new SelectLangAdapter();
@@ -71,5 +71,10 @@ public class SelectLangActivity extends MvpAppCompatActivity implements SelectLa
     public void setLangs(List<Lang> langs) {
         adapter.setDict(langs);
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void setCurrantLang(Lang lang) {
+        adapter.setCurrantLang(lang);
     }
 }

@@ -16,6 +16,7 @@ public class SelectLangAdapter extends RecyclerView.Adapter<SelectLangAdapter.Vi
 
     private List<Lang> items = new ArrayList<>();
     private OnClickItemListener<Lang> onClickLister;
+    private Lang currantLang;
 
     public void setDict(List<Lang> langs) {
         this.items = langs;
@@ -26,13 +27,19 @@ public class SelectLangAdapter extends RecyclerView.Adapter<SelectLangAdapter.Vi
         this.onClickLister = onClickLister;
     }
 
+    public void setCurrantLang(Lang currantLang) {
+        this.currantLang = currantLang;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView textView;
+        View check;
 
         public ViewHolder(View itemView) {
             super(itemView);
             textView = (TextView) itemView.findViewById(R.id.title);
+            check = itemView.findViewById(R.id.viewCheck);
         }
     }
 
@@ -44,7 +51,11 @@ public class SelectLangAdapter extends RecyclerView.Adapter<SelectLangAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Lang item = items.get(position);
+
+        holder.check.setVisibility(currantLang.equals(item) ? View.VISIBLE : View.INVISIBLE);
+
         holder.textView.setText(item.getUi());
+
         holder.itemView.setOnClickListener(v -> onClickLister.onClick(item));
     }
 

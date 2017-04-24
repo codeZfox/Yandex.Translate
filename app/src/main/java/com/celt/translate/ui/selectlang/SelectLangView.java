@@ -12,4 +12,5 @@ public interface SelectLangView extends MvpView {
 
     void setLangs(List<Lang> langs);
 
+    void setCurrantLang(Lang lang);
 }

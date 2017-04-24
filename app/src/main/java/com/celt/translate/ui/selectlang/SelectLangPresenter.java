@@ -17,14 +17,15 @@ public class SelectLangPresenter extends MvpPresenter<SelectLangView> {
 
     @Inject
     public TranslateInteractor interactor;
-    
+
     private List<Lang> langs = new ArrayList<>();
 
-    public SelectLangPresenter() {
+    public SelectLangPresenter(Lang lang) {
         Components.getAppComponent().inject(this);
-//        getViewState().setLangs(langs);
 
-        interactor.getLangs("ru")
+        getViewState().setCurrantLang(lang);
+
+        interactor.getLangs()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(langs -> {
@@ -32,5 +33,4 @@ public class SelectLangPresenter extends MvpPresenter<SelectLangView> {
                     getViewState().setLangs(this.langs);
                 }, Throwable::printStackTrace);
     }
-
 }

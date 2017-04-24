@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface TranslateInteractor {
 
-    Observable<List<Lang>> getLangs(String ui);
+    Observable<List<Lang>> getLangs();
 
     Observable<Translate> translate(String text, Lang langFrom, Lang langTo, boolean save);
 

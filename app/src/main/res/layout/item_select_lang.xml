@@ -7,18 +7,43 @@
               android:clickable="true"
         >
 
-    <TextView
-            android:layout_width="wrap_content"
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/title"
-            android:padding="16dp"
-            android:textSize="18sp"
-            android:text="Русский"
-            />
+            >
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/title"
+                android:padding="16dp"
+                android:textSize="18sp"
+                android:text="Русский"
+                />
+
+        <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                >
+        </FrameLayout>
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/viewCheck"
+                android:src="@drawable/ic_check"
+                android:padding="8dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="4dp"
+                />
+    </LinearLayout>
 
     <View
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:background="?attr/colorDivider"
             />
+
 </LinearLayout>

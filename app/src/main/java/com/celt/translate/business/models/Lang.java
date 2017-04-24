@@ -25,6 +25,22 @@ public class Lang implements Comparable<Lang>, Parcelable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Lang lang = (Lang) o;
+
+        return code.equals(lang.code);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return code.hashCode();
+    }
+
+    @Override
     public int compareTo(@NonNull Lang o) {
         return this.ui.compareTo(o.ui);
     }
