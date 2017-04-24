@@ -11,9 +11,9 @@ import java.util.List;
 
 public interface TranslateInteractor {
 
-    Single<List<Lang>> getLangs(String ui);
+    Observable<List<Lang>> getLangs(String ui);
 
-    Single<Translate> translate(String text, Lang langFrom, Lang langTo);
+    Observable<Translate> translate(String text, Lang langFrom, Lang langTo, boolean save);
 
     Observable<Translate> getHistory();
 

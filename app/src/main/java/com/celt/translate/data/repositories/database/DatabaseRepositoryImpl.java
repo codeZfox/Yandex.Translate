@@ -5,7 +5,6 @@ import com.celt.translate.business.models.OrmaDatabase;
 import com.celt.translate.business.models.Translate;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
-import io.reactivex.Single;
 
 import java.util.Date;
 import java.util.List;
@@ -34,9 +33,10 @@ public class DatabaseRepositoryImpl implements DatabaseRepository {
                 .executeAsObservable();
     }
 
-    public Single<Translate> saveTranslate(Translate translate) {
-        orma.insertIntoTranslate(translate);
-        return Single.just(translate);
+    public Observable<Translate> saveTranslate(Translate translate) {
+        return orma.selectFromTranslate()
+                .idEq(orma.insertIntoTranslate(translate))
+                .executeAsObservable();
     }
 
     @Override
@@ -47,9 +47,9 @@ public class DatabaseRepositoryImpl implements DatabaseRepository {
                 .execute();
     }
 
-    public Single<List<Translate>> findTranslate(String text, String langSource, String langTarget) {
-        return Single.just(orma.selectFromTranslate()
-                .sourceEq(text.trim())
+    public Observable<List<Translate>> findTranslate(String text, String langSource, String langTarget) {
+        return Observable.just(orma.selectFromTranslate()
+                .sourceEq(text)
                 .targetLangEq(langTarget)
                 .sourceLangEq(langSource)
                 .orderByIsHistoryDesc()
@@ -59,6 +59,7 @@ public class DatabaseRepositoryImpl implements DatabaseRepository {
 
     @Override
     public Completable mark(Translate item) {
+
         return orma.updateTranslate()
                 .idEq(item.id)
                 .isFavorite(!item.isFavorite)

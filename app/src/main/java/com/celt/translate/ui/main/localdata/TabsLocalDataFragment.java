@@ -21,8 +21,8 @@ public class TabsLocalDataFragment extends AbsFragment {
 
         adapter = new ViewPagerAdapter<>(getChildFragmentManager());
 
-        adapter.addFragment(HistoryFragment.newInstance(TypeLocalFragment.HISTORY), getString(R.string.history));
         adapter.addFragment(HistoryFragment.newInstance(TypeLocalFragment.FAVORITES), getString(R.string.favorites));
+        adapter.addFragment(HistoryFragment.newInstance(TypeLocalFragment.HISTORY), getString(R.string.history));
 
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.viewpager);
         viewPager.setAdapter(adapter);

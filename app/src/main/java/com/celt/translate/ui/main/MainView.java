@@ -6,4 +6,7 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
 @StateStrategyType(AddToEndSingleStrategy.class)
 public interface MainView extends MvpView {
+
+//    void init(ViewPagerAdapter<AbsFragment> adapter);
+    
 }

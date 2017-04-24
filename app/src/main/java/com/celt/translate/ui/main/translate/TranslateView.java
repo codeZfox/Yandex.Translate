@@ -37,6 +37,28 @@ public interface TranslateView extends MvpView {
     @StateStrategyType(OneExecutionStateStrategy.class)
     void openSelectLangToScreen(Lang langFrom);
 
-    void showAnimationPlayText(boolean isPlay);
+    @StateStrategyType(value = AddToEndSingleByTagStateStrategy.class, tag = "AnimationPlayTextSource")
+    void showAnimationPlayTextSource();
 
+    @StateStrategyType(value = AddToEndSingleByTagStateStrategy.class, tag = "AnimationPlayTextSource")
+    void hideAnimationPlayTextSource(boolean isPlay);
+
+    @StateStrategyType(value = AddToEndSingleByTagStateStrategy.class, tag = "AnimationPlayTextTarget")
+    void showAnimationPlayTextTarget();
+
+    @StateStrategyType(value = AddToEndSingleByTagStateStrategy.class, tag = "AnimationPlayTextTarget")
+    void hideAnimationPlayTextTarget(boolean isPlay);
+
+    void enablePlayBtnTextSource(boolean isPlay);
+
+    void enablePlayBtnTextTarget(boolean isPlay);
+
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void showMessage(String message);
+
+    void showBookMaker(boolean isFavorite);
+
+    void showBtnSource(boolean isShow);
+
+    void showBtnTarget(boolean isShow);
 }

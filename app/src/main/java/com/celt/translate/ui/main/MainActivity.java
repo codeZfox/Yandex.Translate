@@ -34,12 +34,14 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
-            @Override
-            public void onPageSelected(int position) {
-                (adapter.getItem(position)).update();
-            }
-        });
+        if (savedInstanceState == null) {
+            viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+                @Override
+                public void onPageSelected(int position) {
+                    (adapter.getItem(position)).update();
+                }
+            });
+        }
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);

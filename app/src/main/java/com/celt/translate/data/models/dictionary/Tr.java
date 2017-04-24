@@ -88,20 +88,5 @@ public class Tr {
         return ex;
     }
 
-    //    public String getEx() {
-//        StringBuilder builder = new StringBuilder();
-//
-//        for (int i = 0; i < ex.size(); i++) {
-//            builder.append(ex.get(i).getText());
-//            builder.append(" — ");
-//            builder.append(ex.get(i).getTr());
-//
-//            if (i < mean.size() - 1) {
-//                builder.append("\n");
-//            }
-//        }
-//
-//        return builder.toString();
-//    }
 
 }

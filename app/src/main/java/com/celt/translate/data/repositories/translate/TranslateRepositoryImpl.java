@@ -3,18 +3,18 @@ package com.celt.translate.data.repositories.translate;
 import com.celt.translate.data.models.LangsResponse;
 import com.celt.translate.data.models.TranslateResponse;
 import com.celt.translate.data.repositories.retrofit.API;
-import io.reactivex.Single;
+import io.reactivex.Observable;
 
 public class TranslateRepositoryImpl implements TranslateRepository{
 
     private TranslateApi api = API.createTranslateApi();
 
-    public Single<LangsResponse> getLangs(String ui) {
+    public Observable<LangsResponse> getLangs(String ui) {
         return api.getLangs(ui);
     }
 
     @Override
-    public Single<TranslateResponse> translate(String text, String lang) {
+    public Observable<TranslateResponse> translate(String text, String lang) {
         return api.translate(text, lang);
     }
 }

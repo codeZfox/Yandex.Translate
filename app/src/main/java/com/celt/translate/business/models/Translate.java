@@ -11,7 +11,7 @@ import java.util.Date;
 public class Translate {
 
     @PrimaryKey(autoincrement = true)
-    public int id;
+    public long id;
 
     @Column(indexed = true)
     public String source;
@@ -82,6 +82,6 @@ public class Translate {
 
     @Override
     public int hashCode() {
-        return id;
+        return (int) (id ^ (id >>> 32));
     }
 }

@@ -17,17 +17,53 @@
             android:textSize="22sp"
             />
 
-    <android.support.v7.widget.RecyclerView
+    <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/recyclerView"
             android:layout_weight="1"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:overScrollMode="never"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentTop="true"
-            />
+            >
+
+        <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/recyclerView"
+                android:layout_weight="1"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:overScrollMode="never"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentTop="true"
+                />
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                >
+
+            <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:id="@+id/btnBookMaker"
+                    android:src="@drawable/ic_fav"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    />
+
+            <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:id="@+id/btnPlayTextTarget"
+                    android:src="@drawable/ic_sound_active"
+                    android:layout_marginRight="20dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    />
+        </LinearLayout>
+
+    </LinearLayout>
 
     <RelativeLayout
             android:orientation="horizontal"
@@ -35,7 +71,6 @@
             android:layout_height="wrap_content"
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
-            android:background="@drawable/gradient_wihte_transp"
             android:layout_alignParentBottom="true"
             >
 

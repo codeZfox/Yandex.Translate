@@ -5,6 +5,7 @@ import android.util.Log;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.celt.translate.business.models.Lang;
+import com.celt.translate.business.models.Translate;
 import com.celt.translate.business.translate.TranslateInteractor;
 import com.celt.translate.dagger.Components;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -22,14 +23,18 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     @Inject
     public TranslateInteractor interactor;
 
+    private Translate translate;
+
     private Lang langSource;
     private Lang langTarget;
+
+    private boolean isPlayTextTarget;
+    private boolean isPlayTextSource;
 
     private String textSource = "";
     private String textTarget = "";
 
     private Handler handlerForSearch = new Handler();
-
     private Vocalizer vocalizer;
 
     public TranslatePresenter() {
@@ -38,77 +43,111 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
         langSource = new Lang("ru", "Русский");
         langTarget = new Lang("en", "Английский");
 
+        checkLangPlayText();
+
         getViewState().setLangSource(langSource);
         getViewState().setLangTarget(langTarget);
+
+        getViewState().showBtnSource(false);
+        getViewState().showBtnTarget(false);
     }
 
-    public void translate(String text) {
-        getViewState().hideDictionaryInfo();
+    public void translate(String text, boolean done) {
+        if (!done) {
+            getViewState().hideDictionaryInfo();
+        }
         this.textSource = text;
+        getViewState().showBtnSource(!text.trim().isEmpty());
         if (!text.trim().isEmpty()) {
             handlerForSearch.removeCallbacksAndMessages(null);
-            handlerForSearch.postDelayed(() -> translateText(text, langSource, langTarget), 400L);
+            handlerForSearch.postDelayed(() -> translateText(text, langSource, langTarget, done), 500L);
         } else {
+            getViewState().hideDictionaryInfo();
+            getViewState().showBtnTarget(false);
             getViewState().showTranslate("");
         }
     }
 
-    public void playText() {
+    public void playSourceText() {
         resetVocalizer();
-        if (!textSource.isEmpty()) {
-            vocalizer = Vocalizer.createVocalizer(Vocalizer.Language.RUSSIAN, textSource, false, Vocalizer.Voice.JANE);
-            vocalizer.setListener(new VocalizerListener() {
-                @Override
-                public void onSynthesisBegin(Vocalizer vocalizer) {
-
-                }
-
-                @Override
-                public void onSynthesisDone(Vocalizer vocalizer, Synthesis synthesis) {
-                    vocalizer.play();
-                }
-
-                @Override
-                public void onPlayingBegin(Vocalizer vocalizer) {
-                }
-
-                @Override
-                public void onPlayingDone(Vocalizer vocalizer) {
-                    getViewState().showAnimationPlayText(false);
-                }
-
-                @Override
-                public void onVocalizerError(Vocalizer vocalizer, Error error) {
-                    Log.e("Vocalizer", error.getString());
-                    getViewState().showAnimationPlayText(false);
-                }
-            });
-            vocalizer.start();
-            getViewState().showAnimationPlayText(true);
-
-
+        if (isPlayTextSource) {
+            if (!textSource.isEmpty()) {
+                getViewState().showAnimationPlayTextSource();
+                playText(langSource.getCode(), textSource);
+            }
+        } else {
+            getViewState().showMessage("Озвучивание на этом языке пока нет");
         }
     }
 
-    private void translate() {
-        translate(textSource);
+    public void playTargetText() {
+        resetVocalizer();
+        if (isPlayTextTarget) {
+            if (!textTarget.isEmpty()) {
+                getViewState().showAnimationPlayTextTarget();
+                playText(langTarget.getCode(), textTarget);
+            }
+        } else {
+            getViewState().showMessage("Озвучивание на этом языке пока нет");
+        }
     }
 
-    private void translateText(String text, Lang langFrom, Lang langTo) {
-        interactor.translate(text, langFrom, langTo)
-                .doOnSuccess(translate -> {
+    private void playText(String lang, String text) {
+        vocalizer = Vocalizer.createVocalizer(lang, text, false, Vocalizer.Voice.JANE);
+        vocalizer.setListener(new VocalizerListener() {
+            @Override
+            public void onSynthesisBegin(Vocalizer vocalizer) {
+
+            }
+
+            @Override
+            public void onSynthesisDone(Vocalizer vocalizer, Synthesis synthesis) {
+                vocalizer.play();
+            }
+
+            @Override
+            public void onPlayingBegin(Vocalizer vocalizer) {
+            }
+
+            @Override
+            public void onPlayingDone(Vocalizer vocalizer) {
+                getViewState().hideAnimationPlayTextTarget(isPlayTextTarget);
+                getViewState().hideAnimationPlayTextSource(isPlayTextSource);
+            }
+
+            @Override
+            public void onVocalizerError(Vocalizer vocalizer, Error error) {
+                Log.e("Vocalizer", error.getString());
+                getViewState().hideAnimationPlayTextTarget(isPlayTextTarget);
+                getViewState().hideAnimationPlayTextSource(isPlayTextSource);
+            }
+        });
+        vocalizer.start();
+    }
+
+    private void translate() {
+        resetVocalizer();
+        translate(textSource, true);
+    }
+
+    private void translateText(String text, Lang langFrom, Lang langTo, boolean save) {
+        interactor.translate(text, langFrom, langTo, save)
+                .doOnNext(translate -> {
+
+                    this.translate = translate;
                     interactor.lookup(text, langFrom, langTo, "ru")
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(response -> {
                                 getViewState().showDictionaryInfo(response.def);
                             }, Throwable::printStackTrace);
-                    ;
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> {
-                    textTarget = response.translation;
-                    getViewState().showTranslate(response.translation);
+                .subscribe(translate1 -> {
+                    getViewState().showBtnTarget(true);
+                    textTarget = translate1.translation;
+                    getViewState().showBookMaker(translate1.isFavorite);
+                    getViewState().showTranslate(translate1.translation);
                 }, Throwable::printStackTrace);
     }
 
@@ -123,26 +162,50 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     }
 
     public void setLangSource(Lang lang) {
+        resetVocalizer();
         this.langSource = lang;
+        isPlayTextSource = checkPlayLang(lang);
+        getViewState().enablePlayBtnTextSource(isPlayTextSource);
         getViewState().setLangSource(this.langSource);
-        translate();
     }
 
     public void setLangTarget(Lang lang) {
         this.langTarget = lang;
+        isPlayTextTarget = checkPlayLang(lang);
+        getViewState().enablePlayBtnTextTarget(isPlayTextTarget);
         getViewState().setLangTarget(this.langTarget);
         translate();
     }
 
+    private boolean checkPlayLang(Lang lang) {
+        String code = lang.getCode();
+        return code.equals(Vocalizer.Language.ENGLISH)
+                || code.equals(Vocalizer.Language.RUSSIAN)
+                || code.equals(Vocalizer.Language.TURKISH)
+                || code.equals(Vocalizer.Language.UKRAINIAN);
+    }
+
     public void swapLang() {
+        resetVocalizer();
         Lang temp = langTarget;
         langTarget = langSource;
         langSource = temp;
+        checkLangPlayText();
         getViewState().setSourceText(textTarget);
 //        translate(textTarget);
     }
 
+    private void checkLangPlayText() {
+        isPlayTextSource = checkPlayLang(langSource);
+        getViewState().enablePlayBtnTextSource(isPlayTextSource);
+        isPlayTextTarget = checkPlayLang(langTarget);
+        getViewState().enablePlayBtnTextTarget(isPlayTextTarget);
+    }
+
     private void resetVocalizer() {
+        getViewState().hideAnimationPlayTextTarget(isPlayTextTarget);
+        getViewState().hideAnimationPlayTextSource(isPlayTextSource);
+
         if (vocalizer != null) {
             vocalizer.cancel();
             vocalizer = null;
@@ -156,11 +219,33 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     }
 
     public void setTextSource(String item) {
+        resetVocalizer();
         Lang temp = langTarget;
         langTarget = langSource;
         langSource = temp;
+        checkLangPlayText();
         getViewState().setLangSource(langSource);
         getViewState().setLangTarget(langTarget);
         getViewState().setSourceText(item);
+    }
+
+    public void bookmaker() {
+        interactor.mark(translate)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {
+                    translate.isFavorite = !translate.isFavorite;
+                    getViewState().showBookMaker(translate.isFavorite);
+                }, Throwable::printStackTrace);
+    }
+
+    public void update() {
+        interactor.translate(textSource, langSource, langTarget, false)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(translate1 -> {
+                    this.translate = translate1;
+                    getViewState().showBookMaker(translate.isFavorite);
+                }, Throwable::printStackTrace);
     }
 }

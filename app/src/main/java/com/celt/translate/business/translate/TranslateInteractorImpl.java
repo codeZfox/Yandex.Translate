@@ -1,8 +1,8 @@
 package com.celt.translate.business.translate;
 
 import com.celt.translate.business.models.Lang;
-import com.celt.translate.dagger.Components;
 import com.celt.translate.business.models.Translate;
+import com.celt.translate.dagger.Components;
 import com.celt.translate.data.models.LookupResponse;
 import com.celt.translate.data.repositories.database.DatabaseRepository;
 import com.celt.translate.data.repositories.dictionary.DictionaryRepository;
@@ -32,7 +32,7 @@ public class TranslateInteractorImpl implements TranslateInteractor {
         Components.getAppComponent().inject(this);
     }
 
-    public Single<List<Lang>> getLangs(String ui) {
+    public Observable<List<Lang>> getLangs(String ui) {
         return repository.getLangs(ui)
                 .map(i -> {
                     List<Lang> list = new ArrayList<>();
@@ -45,20 +45,24 @@ public class TranslateInteractorImpl implements TranslateInteractor {
     }
 
     @Override
-    public Single<Translate> translate(String text, Lang langFrom, Lang langTo) {
-
+    public Observable<Translate> translate(String text, Lang langFrom, Lang langTo, boolean save) {
         return databaseRepository.findTranslate(text, langFrom.getCode(), langTo.getCode())
-                .flatMap(translate -> {
-                    if (!translate.isEmpty()) {
-                        Translate item = translate.get(0);
+                .flatMap(translateList -> {
+                    if (!translateList.isEmpty()) {
+                        Translate item = translateList.get(0);
                         databaseRepository.updateTranslate(item);
-                        return Single.just(item);
+                        return Observable.just(item);
                     } else {
                         return repository.translate(text, getLangLang(langFrom, langTo))
-                                .flatMap(response -> databaseRepository.saveTranslate(new Translate(text, response.getText().get(0), langFrom, langTo)));
+                                .flatMap(response -> save ? saveTranslate(text, langFrom, langTo, response.getText().get(0))
+                                        : Observable.just(new Translate(text, response.getText().get(0), langFrom, langTo)));
                     }
                 });
 
+    }
+
+    private Observable<Translate> saveTranslate(String text, Lang langFrom, Lang langTo, String response) {
+        return databaseRepository.saveTranslate(new Translate(text, response, langFrom, langTo));
     }
 
     private String getLangLang(Lang langFrom, Lang langTo) {

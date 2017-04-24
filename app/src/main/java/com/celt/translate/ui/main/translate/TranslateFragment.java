@@ -19,6 +19,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.celt.translate.R;
 import com.celt.translate.business.models.Lang;
@@ -38,6 +39,8 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
     @InjectPresenter
     TranslatePresenter presenter;
 
+    private ImageView bookMaker;
+
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.screen_translate, container, false);
@@ -46,7 +49,8 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
     private TextView textViewLangFrom, textViewLangTo;
     private EditText editText;
     private TextView translatedText;
-    private ImageView btnPlayText;
+    private ImageView btnPlayTextSource;
+    private ImageView btnPlayTextTarget;
     private View btnClearText;
 
     private int position;
@@ -69,15 +73,19 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
         editText = (EditText) view.findViewById(R.id.editText);
         translatedText = (TextView) view.findViewById(R.id.textView_translated);
         btnClearText = view.findViewById(R.id.btnClearText);
-        btnClearText.setVisibility(View.INVISIBLE);
         btnClearText.setOnClickListener(v -> {
-            editText.setText("");
-//            presenter.translate("");
+            presenter.setTextSource("");
         });
 
 
-        btnPlayText = (ImageView) view.findViewById(R.id.btnPlayText);
-        btnPlayText.setOnClickListener(v -> presenter.playText());
+        btnPlayTextSource = (ImageView) view.findViewById(R.id.btnPlayText);
+        btnPlayTextSource.setOnClickListener(v -> presenter.playSourceText());
+
+        btnPlayTextTarget = (ImageView) view.findViewById(R.id.btnPlayTextTarget);
+        btnPlayTextTarget.setOnClickListener(v -> presenter.playTargetText());
+
+        bookMaker = ((ImageView) getView().findViewById(R.id.btnBookMaker));
+        bookMaker.setOnClickListener(v -> presenter.bookmaker());
 
         textViewLangFrom = (TextView) view.findViewById(R.id.textView_lang_from);
         textViewLangTo = (TextView) view.findViewById(R.id.textView_lang_to);
@@ -141,7 +149,7 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
 
         editText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                presenter.translate(v.getText().toString());
+                presenter.translate(editText.getText().toString(), true);
                 hideSoftKeyboard(getActivity());
             }
             return true;
@@ -151,13 +159,30 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
                                             @Override
                                             public void afterTextChanged(Editable s) {
                                                 String text = s.toString();
-                                                btnClearText.setVisibility(!text.isEmpty() ? View.VISIBLE : View.INVISIBLE);
-                                                presenter.translate(text);
+                                                presenter.translate(text, false);
                                             }
                                         }
         );
 
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                presenter.translate(editText.getText().toString(), true);
+            }
+        });
+
         setupUI(getActivity(), view);
+    }
+
+    @Override
+    public void showBtnSource(boolean isShow) {
+        btnClearText.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        btnPlayTextSource.setVisibility(isShow ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void showBtnTarget(boolean isShow) {
+        bookMaker.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        btnPlayTextTarget.setVisibility(isShow ? View.VISIBLE : View.GONE);
     }
 
     private TextView getTextViewLangFrom() {
@@ -251,22 +276,70 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
     private RotateAnimation anim;
 
     @Override
-    public void showAnimationPlayText(boolean isPlay) {
-        btnPlayText.setImageDrawable(getResources().getDrawable(isPlay ? R.drawable.ic_spinner : R.drawable.ic_sound_active));
-        if (isPlay) {
-            if (anim == null) {
-                int pivotX = (btnPlayText.getWidth()/2);
-                int pivotY = (btnPlayText.getHeight()/2);
-                anim = new RotateAnimation(0f, 350f, pivotX, pivotY);
-                anim.setInterpolator(new LinearInterpolator());
-                anim.setRepeatCount(Animation.INFINITE);
-                anim.setDuration(700);
-            }
-            btnPlayText.startAnimation(anim);
-        } else {
-            if (anim != null) {
-                anim.cancel();
-            }
+    public void showAnimationPlayTextSource() {
+        startAnim(btnPlayTextSource);
+    }
+
+    @Override
+    public void showAnimationPlayTextTarget() {
+        startAnim(btnPlayTextTarget);
+    }
+
+    @Override
+    public void hideAnimationPlayTextSource(boolean isPlay) {
+        if (anim != null) {
+            anim.cancel();
         }
+        enablePlayBtnTextSource(isPlay);
+    }
+
+    @Override
+    public void hideAnimationPlayTextTarget(boolean isPlay) {
+        if (anim != null) {
+            anim.cancel();
+        }
+        enablePlayBtnTextTarget(isPlay);
+    }
+
+    private void startAnim(ImageView imageView) {
+        imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_spinner));
+        if (anim == null) {
+            int pivotX = (imageView.getWidth() / 2);
+            int pivotY = (imageView.getHeight() / 2);
+            anim = new RotateAnimation(0f, 350f, pivotX, pivotY);
+            anim.setInterpolator(new LinearInterpolator());
+            anim.setRepeatCount(Animation.INFINITE);
+            anim.setDuration(700);
+        }
+        imageView.startAnimation(anim);
+    }
+
+    @Override
+    public void enablePlayBtnTextSource(boolean isPlay) {
+        btnPlayTextSource.setImageDrawable(getResources().getDrawable(isPlay ? R.drawable.ic_sound_active : R.drawable.ic_sound_disabled));
+    }
+
+    @Override
+    public void enablePlayBtnTextTarget(boolean isPlay) {
+        btnPlayTextTarget.setImageDrawable(getResources().getDrawable(isPlay ? R.drawable.ic_sound_active : R.drawable.ic_sound_disabled));
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showBookMaker(boolean isFavorite) {
+        bookMaker.setColorFilter(getResources().getColor(getColorMark(isFavorite)));
+    }
+
+    private int getColorMark(boolean item) {
+        return item ? R.color.colorAccent : R.color.colorGray;
+    }
+
+    @Override
+    public void update() {
+        presenter.update();
     }
 }
