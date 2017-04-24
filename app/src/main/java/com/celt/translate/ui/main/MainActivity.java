@@ -30,7 +30,6 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
         adapter.addFragment(new TranslateFragment());
         adapter.addFragment(new TabsLocalDataFragment());
-        adapter.addFragment(new TranslateFragment());
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(adapter);
@@ -48,7 +47,6 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_tab_translate);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_tab_fav);
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_tab_settings);
 
         setupUI(this, findViewById(R.id.root));
     }

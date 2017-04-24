@@ -67,12 +67,12 @@ public class SettingsLangRepositoryImpl implements SettingsLangRepository {
 
     public Completable setLangTarget(Lang lang) {
         offerQueue(queueTarget, lang);
-        saveQueueSource(queueTarget, QUEUE_TARGET);
+        saveQueue(queueTarget, QUEUE_TARGET);
         return setLang(lang, LANG_TARGET);
     }
 
     private void offerQueue(Queue<Lang> queue, Lang lang) {
-        if (!queue.equals(lang)) {
+        if (!queue.contains(lang)) {
             if (queue.size() == QUEUE_SIZE) {
                 queue.poll();
             }
@@ -91,11 +91,11 @@ public class SettingsLangRepositoryImpl implements SettingsLangRepository {
     @Override
     public Completable setLangSource(Lang lang) {
         offerQueue(queueSource, lang);
-        saveQueueSource(queueSource, QUEUE_SOURCE);
+        saveQueue(queueSource, QUEUE_SOURCE);
         return setLang(lang, LANG_SOURCE);
     }
 
-    private void saveQueueSource(Queue<Lang> queueSource, String key) {
+    private void saveQueue(Queue<Lang> queueSource, String key) {
         sharedPreferences.edit().putString(key, new Gson().toJson(queueSource)).apply();
     }
 

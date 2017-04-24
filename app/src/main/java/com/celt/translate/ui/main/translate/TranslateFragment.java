@@ -114,9 +114,7 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
             viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
-                    textViewLangFrom.getViewTreeObserver().addOnGlobalLayoutListener(this);
                     position = width - (textViewLangFrom.getWidth() + textViewLangTo.getWidth()) + textViewLangFrom.getWidth();
-                    textViewLangFrom.getLayoutParams();
                 }
             });
         }
