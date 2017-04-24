@@ -7,4 +7,6 @@
     <string name="no_translations_in_fav">Нет переводов в\nизбранном</string>
     <string name="delete_tr">Удалить перевод?</string>
     <string name="translate_copy">Перевод скопирован</string>
+    <string name="search_in_history">Найти в истории</string>
+    <string name="search_in_fav">Найти в избранном</string>
 </resources>

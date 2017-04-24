@@ -42,6 +42,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         TextView textTarget;
         TextView textLang;
         ImageView mark;
+        View btnMark;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -49,6 +50,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             textTarget = (TextView) itemView.findViewById(R.id.textViewTarget);
             textLang = (TextView) itemView.findViewById(R.id.textViewLang);
             mark = (ImageView) itemView.findViewById(R.id.imageView);
+            btnMark = itemView.findViewById(R.id.btnBookMaker);
         }
     }
 
@@ -64,7 +66,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         holder.textTarget.setText(item.translation);
         holder.textLang.setText(item.textLang());
         holder.mark.setColorFilter(holder.itemView.getContext().getResources().getColor(getColorMark(item.isFavorite)));
-        holder.mark.setOnClickListener(v -> onClickListerMark.onClick(item));
+        holder.btnMark.setOnClickListener(v -> onClickListerMark.onClick(item));
         holder.itemView.setOnClickListener(v -> onClickLister.onClick(item));
         holder.itemView.setOnLongClickListener(v -> {
             onLongClickLister.onClick(item);

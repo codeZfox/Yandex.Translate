@@ -121,6 +121,11 @@ public class HistoryFragment extends AbsFragment implements HistoryView {
     }
 
     @Override
+    public void setSearchFiledHintText(int idResText) {
+        editText.setHint(getString(idResText));
+    }
+
+    @Override
     public void showBtnClear(boolean isShow) {
         btnClearText.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
     }

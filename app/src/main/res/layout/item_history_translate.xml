@@ -12,22 +12,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:layout_margin="12dp"
             >
-
-        <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imageView"
-                android:src="@drawable/ic_fav"
-                android:padding="16dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                />
 
         <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
                 >
 
             <TextView
@@ -60,13 +53,34 @@
                 >
         </FrameLayout>
 
-        <TextView
+        <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/textViewLang"
-                android:textColor="@color/colorGray"
-                android:layout_marginRight="8dp"
-                />
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|center_horizontal"
+                android:id="@+id/btnBookMaker"
+                android:paddingRight="12dp"
+                android:paddingLeft="12dp"
+                android:longClickable="false"
+                >
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textViewLang"
+                    android:textColor="@color/colorGray"
+                    android:layout_marginTop="4dp"
+                    />
+
+            <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:id="@+id/imageView"
+                    android:src="@drawable/ic_fav"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:layout_marginTop="4dp"
+                    />
+        </LinearLayout>
 
     </LinearLayout>
 

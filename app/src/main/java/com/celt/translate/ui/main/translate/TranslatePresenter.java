@@ -46,13 +46,31 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     public TranslatePresenter() {
         Components.getAppComponent().inject(this);
 
-        langSource = new Lang("ru", "Русский");
-        langTarget = new Lang("en", "Английский");
+        interactor.getLangSource()
+                .doOnSuccess(lang -> {
+                    langSource = lang;
+                })
+                .flatMap(lang -> interactor.getLangTarget())
+                .doOnSuccess(lang -> {
+                    langTarget = lang;
+                })
+                .doOnSuccess( lang -> interactor.getLastTranslation()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(translate1 -> {
+                            this.translate = translate1;
+                            this.textSource = translate.source;
+                            this.textTarget = translate.translation;
+                            getViewState().setSourceText(textSource);
+                        },Throwable::printStackTrace))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(translate -> {
+                    getViewState().setLangSource(langSource);
+                    getViewState().setLangTarget(langTarget);
+                    checkLangPlayText();
+                }, Throwable::printStackTrace);
 
-        checkLangPlayText();
-
-        getViewState().setLangSource(langSource);
-        getViewState().setLangTarget(langTarget);
 
         getViewState().showBtnSource(false);
         getViewState().showBtnTarget(false);
@@ -141,7 +159,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                 .doOnNext(translate -> {
 
                     this.translate = translate;
-                    interactor.lookup(text, langFrom, langTo, "ru")
+                    interactor.lookup(text, langFrom, langTo)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(response -> {
                                 getViewState().showDictionaryInfo(response.def);
@@ -167,12 +185,21 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
         getViewState().openSelectLangToScreen(langTarget);
     }
 
+    private void saveLang() {
+        interactor.setLangSource(langSource)
+                .doOnComplete(() -> interactor.setLangTarget(langTarget))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
+    }
+
     public void setLangSource(Lang lang) {
         resetVocalizer();
         this.langSource = lang;
         isPlayTextSource = checkPlayLang(lang);
         getViewState().enablePlayBtnTextSource(isPlayTextSource);
         getViewState().setLangSource(this.langSource);
+        saveLang();
     }
 
     public void setLangTarget(Lang lang) {
@@ -181,6 +208,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
         getViewState().enablePlayBtnTextTarget(isPlayTextTarget);
         getViewState().setLangTarget(this.langTarget);
         translate();
+        saveLang();
     }
 
     private boolean checkPlayLang(Lang lang) {
@@ -233,6 +261,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
         getViewState().setLangSource(langSource);
         getViewState().setLangTarget(langTarget);
         getViewState().setSourceText(item);
+        saveLang();
     }
 
     public void bookmaker() {

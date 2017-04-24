@@ -6,8 +6,10 @@ import com.celt.translate.dagger.Components;
 import com.celt.translate.data.models.LookupResponse;
 import com.celt.translate.data.repositories.database.DatabaseRepository;
 import com.celt.translate.data.repositories.dictionary.DictionaryRepository;
+import com.celt.translate.data.repositories.settings.SettingsRepository;
 import com.celt.translate.data.repositories.translate.TranslateRepository;
 import io.reactivex.Completable;
+import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
@@ -27,6 +29,9 @@ public class TranslateInteractorImpl implements TranslateInteractor {
 
     @Inject
     public DatabaseRepository databaseRepository;
+
+    @Inject
+    public SettingsRepository settingsRepository;
 
     public TranslateInteractorImpl() {
         Components.getAppComponent().inject(this);
@@ -57,7 +62,8 @@ public class TranslateInteractorImpl implements TranslateInteractor {
                                 .flatMap(response -> save ? saveTranslate(text, langFrom, langTo, response.getText().get(0))
                                         : Observable.just(new Translate(text, response.getText().get(0), langFrom, langTo)));
                     }
-                });
+                })
+                .doOnNext(translate -> settingsRepository.setLastTranslation(translate));
 
     }
 
@@ -85,12 +91,42 @@ public class TranslateInteractorImpl implements TranslateInteractor {
         return databaseRepository.mark(item, mark);
     }
 
-    public Completable removeFromHistory(Translate item){
+    public Completable removeFromHistory(Translate item) {
         return databaseRepository.removeFromHistory(item);
     }
 
     @Override
-    public Single<LookupResponse> lookup(String text, Lang langFrom, Lang langTo, String ui) {
-        return dictionaryRepository.lookup(text, getLangLang(langFrom, langTo), ui);
+    public Single<LookupResponse> lookup(String text, Lang langFrom, Lang langTo) {
+        return dictionaryRepository.lookup(text, getLangLang(langFrom, langTo), settingsRepository.getUI());
+    }
+
+    @Override
+    public Completable setLangTarget(Lang lang) {
+        return settingsRepository.setLangTarget(lang);
+    }
+
+    @Override
+    public Single<Lang> getLangTarget() {
+        return settingsRepository.getLangTarget();
+    }
+
+    @Override
+    public Completable setLangSource(Lang lang) {
+        return settingsRepository.setLangSource(lang);
+    }
+
+    @Override
+    public Single<Lang> getLangSource() {
+        return settingsRepository.getLangSource();
+    }
+
+    @Override
+    public Completable setLastTranslation(Translate value) {
+        return settingsRepository.setLastTranslation(value);
+    }
+
+    @Override
+    public Maybe<Translate> getLastTranslation() {
+        return settingsRepository.getLastTranslation();
     }
 }

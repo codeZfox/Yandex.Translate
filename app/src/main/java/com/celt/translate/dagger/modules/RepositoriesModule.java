@@ -6,6 +6,8 @@ import com.celt.translate.data.repositories.database.DatabaseRepository;
 import com.celt.translate.data.repositories.database.DatabaseRepositoryImpl;
 import com.celt.translate.data.repositories.dictionary.DictionaryRepository;
 import com.celt.translate.data.repositories.dictionary.DictionaryRepositoryImpl;
+import com.celt.translate.data.repositories.settings.SettingsRepository;
+import com.celt.translate.data.repositories.settings.SettingsRepositoryImpl;
 import com.celt.translate.data.repositories.translate.TranslateRepository;
 import com.celt.translate.data.repositories.translate.TranslateRepositoryImpl;
 import dagger.Module;
@@ -35,6 +37,13 @@ public class RepositoriesModule {
     @Singleton
     DatabaseRepository provideDatabaseRepository(Context context) {
         return new DatabaseRepositoryImpl(context);
+    }
+
+    @Provides
+    @NonNull
+    @Singleton
+    SettingsRepository provideSettingsRepository(Context context) {
+        return new SettingsRepositoryImpl(context);
     }
 }
 

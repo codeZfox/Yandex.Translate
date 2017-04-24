@@ -3,6 +3,7 @@ package com.celt.translate.ui.main.localdata;
 import android.os.Handler;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.celt.translate.R;
 import com.celt.translate.business.models.Translate;
 import com.celt.translate.business.translate.TranslateInteractor;
 import com.celt.translate.dagger.Components;
@@ -31,6 +32,17 @@ public class HistoryPresenter extends MvpPresenter<HistoryView> {
 
         getViewState().setItems(items);
         getViewState().showBtnClear(false);
+
+        switch (type) {
+            case HISTORY: {
+                getViewState().setSearchFiledHintText(R.string.search_in_history);
+                break;
+            }
+            case FAVORITES: {
+                getViewState().setSearchFiledHintText(R.string.search_in_fav);
+                break;
+            }
+        }
 
     }
 

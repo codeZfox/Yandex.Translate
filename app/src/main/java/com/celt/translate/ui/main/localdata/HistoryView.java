@@ -19,4 +19,6 @@ public interface HistoryView extends MvpView {
     void showDeleteDialog(Translate item, boolean isShow);
 
     void showBtnClear(boolean isShow);
+
+    void setSearchFiledHintText(int idResText);
 }
