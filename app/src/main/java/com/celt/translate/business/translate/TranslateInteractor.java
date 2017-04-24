@@ -9,6 +9,7 @@ import io.reactivex.Observable;
 import io.reactivex.Single;
 
 import java.util.List;
+import java.util.Queue;
 
 public interface TranslateInteractor {
 
@@ -17,11 +18,9 @@ public interface TranslateInteractor {
     Observable<Translate> translate(String text, Lang langFrom, Lang langTo, boolean save);
 
     Observable<Translate> getHistory();
-
     Observable<Translate> getFavorites();
 
     Completable mark(Translate item);
-
     Completable mark(Translate item, boolean mark);
 
     Single<LookupResponse> lookup(String text, Lang langFrom, Lang langTo);
@@ -29,14 +28,13 @@ public interface TranslateInteractor {
     Completable removeFromHistory(Translate item);
 
     Completable setLangTarget(Lang lang);
-
     Single<Lang> getLangTarget();
+    Single<Queue<Lang>> getQueueSource();
 
     Completable setLangSource(Lang lang);
-
     Single<Lang> getLangSource();
+    Single<Queue<Lang>> getQueueTarget();
 
     Completable setLastTranslation(Translate value);
-
     Maybe<Translate> getLastTranslation();
 }

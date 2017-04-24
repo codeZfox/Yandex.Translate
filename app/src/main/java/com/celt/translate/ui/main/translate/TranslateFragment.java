@@ -28,7 +28,9 @@ import com.celt.translate.ui.base.AbsFragment;
 import com.celt.translate.ui.base.SimpleTextWatcher;
 import com.celt.translate.ui.selectlang.SelectLangActivity;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 import static android.app.Activity.RESULT_OK;
 import static com.celt.translate.ui.base.KeyboardUtils.hideSoftKeyboard;
@@ -38,7 +40,6 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
 
     @InjectPresenter
     TranslatePresenter presenter;
-
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -259,13 +260,13 @@ public class TranslateFragment extends AbsFragment implements TranslateView {
     private static final int REQUEST_CODE_LANG_TO = 1;
 
     @Override
-    public void openSelectLangFromScreen(Lang lang) {
-        startActivityForResult(SelectLangActivity.newIntent(getContext(), lang), REQUEST_CODE_LANG_FROM);
+    public void openSelectLangFromScreen(Lang lang, Queue<Lang> list) {
+        startActivityForResult(SelectLangActivity.newIntent(getContext(), lang, new ArrayList<>(list)), REQUEST_CODE_LANG_FROM);
     }
 
     @Override
-    public void openSelectLangToScreen(Lang lang) {
-        startActivityForResult(SelectLangActivity.newIntent(getContext(), lang), REQUEST_CODE_LANG_TO);
+    public void openSelectLangToScreen(Lang lang, Queue<Lang> list) {
+        startActivityForResult(SelectLangActivity.newIntent(getContext(), lang, new ArrayList<>(list)), REQUEST_CODE_LANG_TO);
     }
 
     @Override

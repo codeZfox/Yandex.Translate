@@ -177,12 +177,22 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
     public void clickTextViewLangFrom() {
         resetVocalizer();
-        getViewState().openSelectLangFromScreen(langSource);
+        interactor.getQueueSource()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(list -> {
+                    getViewState().openSelectLangFromScreen(langSource, list);
+                }, Throwable::printStackTrace);
     }
 
     public void clickTextViewLangTo() {
         resetVocalizer();
-        getViewState().openSelectLangToScreen(langTarget);
+        interactor.getQueueTarget()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(list -> {
+                    getViewState().openSelectLangToScreen(langTarget, list);
+                }, Throwable::printStackTrace);
     }
 
     private void saveLang() {

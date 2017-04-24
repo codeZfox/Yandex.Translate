@@ -3,10 +3,12 @@ package com.celt.translate.business.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import com.celt.translate.ui.selectlang.adapter.LangSelectable;
 
-public class Lang implements Comparable<Lang>, Parcelable {
+public class Lang implements Comparable<Lang>, Parcelable, LangSelectable {
 
     public static final String NAME = "LANG";
+    public static final String LIST = "LANG_LIST";
 
     private String code;
     private String ui;
@@ -72,4 +74,9 @@ public class Lang implements Comparable<Lang>, Parcelable {
             return new Lang[size];
         }
     };
+
+    @Override
+    public String getTitle() {
+        return getUi();
+    }
 }

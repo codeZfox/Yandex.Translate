@@ -12,15 +12,19 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.celt.translate.R;
 import com.celt.translate.business.models.Lang;
+import com.celt.translate.ui.selectlang.adapter.LangSelectable;
+import com.celt.translate.ui.selectlang.adapter.SelectLangAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SelectLangActivity extends MvpAppCompatActivity implements SelectLangView {
 
-    public static Intent newIntent(Context context, Lang lang) {
+    public static Intent newIntent(Context context, Lang lang, ArrayList<Lang> langs) {
 
         Intent intent = new Intent(context, SelectLangActivity.class);
         intent.putExtra(Lang.NAME, lang);
+        intent.putParcelableArrayListExtra(Lang.LIST, langs);
 
         return intent;
     }
@@ -30,10 +34,10 @@ public class SelectLangActivity extends MvpAppCompatActivity implements SelectLa
 
     @ProvidePresenter
     SelectLangPresenter providePresenter() {
-        return new SelectLangPresenter(getIntent().getParcelableExtra(Lang.NAME));
+        return new SelectLangPresenter(getIntent().getParcelableArrayListExtra(Lang.LIST));
     }
 
-    private SelectLangAdapter adapter = new SelectLangAdapter();
+    private SelectLangAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +50,15 @@ public class SelectLangActivity extends MvpAppCompatActivity implements SelectLa
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
-
-        adapter.setOnClickLister(item -> {
+        adapter = new SelectLangAdapter(item -> {
             Intent intent = new Intent();
             intent.putExtra(Lang.NAME, item);
             setResult(RESULT_OK, intent);
             finish();
-        });
+        }, getIntent().getParcelableExtra(Lang.NAME));
+        recyclerView.setAdapter(adapter);
+
+
     }
 
     @Override
@@ -68,13 +73,8 @@ public class SelectLangActivity extends MvpAppCompatActivity implements SelectLa
     }
 
     @Override
-    public void setLangs(List<Lang> langs) {
-        adapter.setDict(langs);
+    public void setLangs(List<LangSelectable> langs) {
+        adapter.setItems(langs);
         adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void setCurrantLang(Lang lang) {
-        adapter.setCurrantLang(lang);
     }
 }

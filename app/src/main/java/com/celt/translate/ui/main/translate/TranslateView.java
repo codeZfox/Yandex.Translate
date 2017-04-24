@@ -9,6 +9,7 @@ import com.celt.translate.data.models.dictionary.Def;
 import com.celt.translate.ui.base.AddToEndSingleByTagStateStrategy;
 
 import java.util.List;
+import java.util.Queue;
 
 @StateStrategyType(AddToEndSingleStrategy.class)
 public interface TranslateView extends MvpView {
@@ -32,10 +33,10 @@ public interface TranslateView extends MvpView {
     void hideDictionaryInfo();
 
     @StateStrategyType(OneExecutionStateStrategy.class)
-    void openSelectLangFromScreen(Lang langFrom);
+    void openSelectLangFromScreen(Lang langFrom, Queue<Lang> list);
 
     @StateStrategyType(OneExecutionStateStrategy.class)
-    void openSelectLangToScreen(Lang langFrom);
+    void openSelectLangToScreen(Lang langFrom, Queue<Lang> list);
 
     @StateStrategyType(value = AddToEndSingleByTagStateStrategy.class, tag = "AnimationPlayTextSource")
     void showAnimationPlayTextSource();

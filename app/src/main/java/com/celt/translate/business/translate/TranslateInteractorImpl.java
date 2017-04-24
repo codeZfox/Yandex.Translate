@@ -6,7 +6,7 @@ import com.celt.translate.dagger.Components;
 import com.celt.translate.data.models.LookupResponse;
 import com.celt.translate.data.repositories.database.DatabaseRepository;
 import com.celt.translate.data.repositories.dictionary.DictionaryRepository;
-import com.celt.translate.data.repositories.settings.SettingsRepository;
+import com.celt.translate.data.repositories.settings.SettingsLangRepository;
 import com.celt.translate.data.repositories.translate.TranslateRepository;
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
@@ -14,10 +14,7 @@ import io.reactivex.Observable;
 import io.reactivex.Single;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TranslateInteractorImpl implements TranslateInteractor {
 
@@ -31,14 +28,14 @@ public class TranslateInteractorImpl implements TranslateInteractor {
     public DatabaseRepository databaseRepository;
 
     @Inject
-    public SettingsRepository settingsRepository;
+    public SettingsLangRepository settingsLangRepository;
 
     public TranslateInteractorImpl() {
         Components.getAppComponent().inject(this);
     }
 
     public Observable<List<Lang>> getLangs() {
-        return repository.getLangs(settingsRepository.getUI())
+        return repository.getLangs(settingsLangRepository.getUI())
                 .map(i -> {
                     List<Lang> list = new ArrayList<>();
                     for (Map.Entry<String, String> entry : i.getLangs().entrySet()) {
@@ -63,7 +60,7 @@ public class TranslateInteractorImpl implements TranslateInteractor {
                                         : Observable.just(new Translate(text, response.getText().get(0), langFrom, langTo)));
                     }
                 })
-                .doOnNext(translate -> settingsRepository.setLastTranslation(translate));
+                .doOnNext(translate -> settingsLangRepository.setLastTranslation(translate));
 
     }
 
@@ -97,36 +94,46 @@ public class TranslateInteractorImpl implements TranslateInteractor {
 
     @Override
     public Single<LookupResponse> lookup(String text, Lang langFrom, Lang langTo) {
-        return dictionaryRepository.lookup(text, getLangLang(langFrom, langTo), settingsRepository.getUI());
+        return dictionaryRepository.lookup(text, getLangLang(langFrom, langTo), settingsLangRepository.getUI());
     }
 
     @Override
     public Completable setLangTarget(Lang lang) {
-        return settingsRepository.setLangTarget(lang);
+        return settingsLangRepository.setLangTarget(lang);
     }
 
     @Override
     public Single<Lang> getLangTarget() {
-        return settingsRepository.getLangTarget();
+        return settingsLangRepository.getLangTargetSingle();
+    }
+
+    @Override
+    public Single<Queue<Lang>> getQueueSource(){
+        return settingsLangRepository.getQueueSourceSingle();
+    }
+
+    @Override
+    public Single<Queue<Lang>> getQueueTarget(){
+        return settingsLangRepository.getQueueTargetSingle();
     }
 
     @Override
     public Completable setLangSource(Lang lang) {
-        return settingsRepository.setLangSource(lang);
+        return settingsLangRepository.setLangSource(lang);
     }
 
     @Override
     public Single<Lang> getLangSource() {
-        return settingsRepository.getLangSource();
+        return settingsLangRepository.getLangSourceSingle();
     }
 
     @Override
     public Completable setLastTranslation(Translate value) {
-        return settingsRepository.setLastTranslation(value);
+        return settingsLangRepository.setLastTranslation(value);
     }
 
     @Override
     public Maybe<Translate> getLastTranslation() {
-        return settingsRepository.getLastTranslation();
+        return settingsLangRepository.getLastTranslation();
     }
 }
